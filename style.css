@@ -1,0 +1,508 @@
+body {
+    background-color: #ffffff;
+    font-family: 'MS Gothic';
+    color: #ffffff;
+    font-size: 16px;
+}
+
+#main_game {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 1400px;
+    height: 780px;
+}
+
+#game_section_div {
+    float: left;
+    z-index: 1;
+    height: 100%;
+    width: 75%;
+}
+
+#game_log_div{
+    float: left;
+    z-index: 1;
+    height: 100%;
+    width: 25%;
+}
+
+#game_section_top_div {
+    float: top;
+    z-index: 2;
+    height: 50%;
+    width: 100%;
+}
+
+#game_section_bottom_div {
+    float: top;
+    z-index: 2;
+    height: 50%;
+    width: 100%;
+}
+
+.inner_box_div {
+    border: 3px solid #ffffff;
+    background: linear-gradient(90deg,rgb(25, 23, 46),rgb(38, 35, 65));
+    box-sizing: border-box;
+    height: 100%;
+    width: 100%;
+}
+
+
+#character_sheet_div {
+    position: relative;
+    float: left;
+    z-index: 3;
+    height: 100%;
+    width: 40%;
+}
+.textbox_name {
+    z-index: 4;
+    background: rgba(0,0,0,0);
+    border: 0px;
+    width: 100%;
+    height: 26px;
+    font-family: cursive;
+    color: #ffffff;
+    font-size: 16px;
+    line-height: 26px;
+    text-align: center;
+}
+.textbox_name::placeholder {
+    color: #ffffff;
+}
+#exp_bar_holder{
+    z-index: 4;
+    top: 5px;
+    left: 10px;
+    width: 394px;
+    height: 26px;
+    position: relative;
+    background-color: rgba(126, 126, 126, 0.5);
+}
+#hp_bar_holder{
+    z-index: 4;
+    top: 10px;
+    left: 10px;
+    width: 394px;
+    height: 26px;
+    position: relative;
+    background-color: rgba(126, 126, 126, 0.5);
+}
+#stamina_bar_holder{
+    z-index: 4;
+    top: 15px;
+    left: 10px;
+    width: 394px;
+    height: 26px;
+    position: relative;
+    background-color: rgba(126, 126, 126, 0.5);
+}
+#mana_bar_holder{
+    z-index: 4;
+    top: 20px;
+    left: 10px;
+    width: 394px;
+    height: 26px;
+    position: relative;
+    background-color: rgba(126, 126, 126, 0.5);
+}
+#exp_bar {
+    background: linear-gradient(90deg,rgb(8, 145, 37),rgb(57, 167, 75));
+}
+#hp_bar {
+    background: linear-gradient(90deg,rgb(145, 8, 8),rgb(167, 57, 57));
+}
+#stamina_bar {
+    background: linear-gradient(90deg,rgb(216, 112, 16),rgb(145, 80, 6));
+}
+#mana_bar {
+    background: linear-gradient(90deg,rgb(55, 46, 180),rgb(13, 35, 109));
+}
+.progress_bar {
+    z-index: 5;
+    height: 26px;
+}
+.bar_label {
+    z-index: 6;
+    font-size: 16px;
+    line-height: 26px;
+    text-wrap: nowrap;
+    width: 100%;
+    height: 26px;
+    position: absolute;
+    top: 0px;
+    left: 10px;
+}
+.bar_middle_label {
+    z-index: 6;
+    font-size: 16px;
+    line-height: 26px;
+    text-wrap: nowrap;
+    text-align: center;
+    width: 100%;
+    height: 26px;
+    position: absolute;
+    top: 0px;
+}
+.char_bottom_holder {
+    z-index: 4;
+    position: absolute;
+    top: 158px;
+    height: 150px;
+    width: 394px;
+    left: 13px;
+}
+.char_bottom_split1 {
+    z-index: 4;
+    position: relative;
+    float: left;
+    height: 150px;
+    width: 196px;
+    background-color: rgba(126, 126, 126, 0.5);
+    border-right: 1px;
+    border-right-color: #ffffff;
+    border-right-style: dotted;
+}
+.char_bottom_split2 {
+    z-index: 4;
+    position: relative;
+    float: left;
+    height: 150px;
+    width: 196px;
+    background-color: rgba(126, 126, 126, 0.5);
+    border-left: 1px;
+    border-left-color: #ffffff;
+    border-left-style: dotted;
+}
+.char_bottom_section {
+    position: relative;
+    left: 10px;
+    z-index: 5;
+    margin-bottom: 5px;
+    width: 186px;
+    height: 26px;
+    line-height: 26px;
+    text-wrap: nowrap;
+}
+#character_button_holder {
+    z-index: 4;
+    top: 350px;
+    left: 13px;
+    width: 394px;
+    height: 26px;
+    position: absolute;
+}
+.character_buttons {
+    float: left;
+    margin-left: 10;
+    width: 118px;
+    height: 100%;
+    background-color: rgba(126, 126, 126);
+    line-height: 26px;
+    text-wrap: nowrap;
+    text-align: center;
+}
+.character_buttons:hover {
+  background-color: #04AA6D;
+}
+#status_effects {
+    position: absolute;
+    top: 307px;
+    height: 44px;
+    width: 394px;
+    left: 13px;
+}
+
+
+
+
+
+
+
+#combat_dialouge_div {
+    float: left;
+    z-index: 3;
+    height: 100%;
+    width: 60%;
+    position:relative;
+}
+#game_time_location {
+    width: 100%;
+    height: 46px;
+    position: relative;
+    z-index: 4;
+    background-color: rgba(126, 126, 126, 0.5);
+}
+.location_topbar_item{
+    z-index: 5;
+    position: absolute;
+    text-wrap: none;
+}
+#location_label{
+    top: 2px;
+    font-size: 14px;
+    height: 14px;
+    line-height: 14px;
+    left: 10px;
+}
+#current_location{
+    left: 10px;
+    top: 12px;
+    height: 34px;
+    line-height: 34px;
+}
+#current_date_time{
+    left: 252px;
+    height: 46px;
+    width: 120px;
+    line-height: 46px;
+    text-align: center;
+}
+#current_weather{
+    right: 0px;
+    height: 46px;
+    width: 200px;
+    line-height: 46px;
+    text-align: right;
+}
+.game_main_window{
+    position: absolute;
+    height: 338px;
+    width: 624px;
+}
+.combat_div_section{
+    height: 100%;
+    width: 50%;
+    float: left;
+}
+.combat_player_div{
+    z-index: 4;
+    position: relative;
+    height: 56px;
+}
+.combat_name_label{
+    z-index: 5;
+    height: 12px;
+    line-height: 12px;
+    font-size: 12px;
+    position: absolute;
+    left: 10px;
+    top: 5px;
+}
+.combat_level_label{
+    z-index: 5;
+    height: 12px;
+    line-height: 12px;
+    font-size: 12px;
+    position: absolute;
+    left: 10px;
+    top: 19px;
+}
+.combat_health_shadow{
+    z-index: 4;
+    height: 18px;
+    width: 260px;
+    position: absolute;
+    left: 10px;
+    top: 32px; 
+    background-color: rgba(126, 126, 126, 0.5);  
+}
+.combat_health_bar{
+    z-index: 5;
+    position: absolute;
+    height: 18px;
+    background: linear-gradient(90deg,rgb(145, 8, 8),rgb(167, 57, 57));
+}
+.combat_health_bar_label{
+    z-index: 6;
+    position: absolute;
+    line-height: 18px;
+    width: 100%;
+    height: 18px;
+    text-align: center;
+    text-wrap: none;
+}
+.combat_action_shadow{
+    z-index: 4;
+    height: 6px;
+    width: 220px;
+    position: absolute;
+    left: 10px;
+    top: 50px; 
+    background-color: rgba(126, 126, 126, 0.5);  
+}
+.combat_action_bar{
+    z-index: 5;
+    position: absolute;
+    height: 6px;
+    background-color: rgba(255, 255, 0);  
+}
+
+
+#game_dialouge_spoken{
+    height: 100px;
+    width: 624px;
+    text-align: center;
+    font-size: 18px;
+    line-height: 32px;
+    overflow-y: scroll;
+    background-color: rgba(0, 0, 0, 0.2);  
+    scrollbar-width: none;
+}
+#game_dialouge_options_holder{
+    height: 238px;
+    width: 624px;
+    position: relative;
+    overflow-y: scroll;
+    scrollbar-width: none;
+}
+.game_dialouge_option{
+    height: 32px;
+    width: 624px;
+    text-align: center;
+    line-height: 30px;
+    font-size: 16px;
+    border-bottom-style: dashed;
+    border-bottom-color: white;
+    border-bottom-width: 1px;
+}
+.game_dialouge_option:hover {
+  background-color: rgba(11, 169, 197, 0.5); 
+}
+
+
+
+
+
+
+
+
+
+#inventory_div{
+    float: left;
+    z-index: 3;
+    height: 100%;
+    width: 40%;
+}
+#inventory_top{
+    float: top;
+    z-index: 4;
+    height: 359px;
+    width: 100%;
+    overflow-y: scroll;
+    scrollbar-width: none;
+}
+.inventory_slot{
+    float: top;
+    z-index: 5;
+    height: 30px;
+    line-height: 30px;
+    width: 100%;
+    padding-left: 6px;
+    border-bottom: 1px dotted #ffffff;
+    box-sizing: border-box;
+}
+#inventory_bottom{
+    float: top;
+    z-index: 4;
+    height: 5%;
+    width: 100%;
+}
+
+
+
+#action_div{
+    float: left;
+    z-index: 3;
+    height: 100%;
+    width: 60%;
+    position: relative;
+}
+#action_bottom_bar{
+    position: absolute;
+    bottom: 3px;
+    width: 624px;
+    height: 31px;
+}
+.action_bottom_bar_item{
+    float:left;
+    width: 20%;
+    height: 31px;
+    line-height: 31px;
+    text-align: center;
+    text-wrap: none;
+    background-color: rgba(126, 126, 126);
+}
+.action_bottom_bar_item:hover {
+  background-color: #04AA6D;
+}
+.action_menu_holder{
+    position: absolute;
+    width: 624px;
+    height: 353px;
+}
+.action_menu_topbar{
+    position: relative;
+    width: 624px;
+    height: 31px;
+}
+#skill_list{
+    position: relative;
+    width: 624px;
+    height: 322px;
+    overflow-y: scroll;
+    scrollbar-width: none;
+}
+.action_menu_list_item{
+    position: relative;
+    width: 624px;
+    height: 30px;
+    border-bottom-style: dotted;
+    border-bottom-width: 1px;
+    border-bottom-color: white;
+}
+.skill_name_label{
+    position: relative;
+    float: left;
+    width: 208px;
+    height: 30px;
+    text-align: left;
+    line-height: 30px;
+}
+.skill_exp_label{
+    position: relative;
+    float: left;
+    width: 207px;
+    height: 30px;
+    text-align: center;
+    line-height: 30px;
+    border-left-color: white;
+    border-left-width: 1px;
+    border-left-style: solid;
+}
+.skill_exp_bar_holder{
+    position: relative;
+    float: left;
+    width: 207px;
+    height: 30px;
+    border-left-color: white;
+    border-left-width: 1px;   
+    border-left-style: solid;
+}
+.skill_exp_bar{
+    position: absolute;
+    width: 207px;
+    height: 30px;
+    background: linear-gradient(90deg,rgb(8, 145, 37),rgb(57, 167, 75));
+}
+.action_name_label{
+    position: relative;
+    float: left;
+    left: 10px;
+    width: 614px;
+    height: 30px;
+    text-align: center;
+    line-height: 30px;
+}

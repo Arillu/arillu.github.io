@@ -1,16 +1,29 @@
-
+import * as ItemData from './inventory.js';
 
 
 let Game_Paused = false;
 
-
+let testsleeping = function(){
+    ItemData.items.type.beds[0].use(Player);
+}
 
 const LevelExpReq = [100,400,1600]
 
 let GameDate = {"Year":1000,"Month":4,"Day":15,"Hour":7,"Minute":30}
-let CharacterStats = {"Strength":1,"Endurance":1,"Agility":1,"Defense":1,"Intelligence":1,"Wisdom":1,"Dexterity":1,"Resistance":1,
-    "HP":10,"HP_Max":10,"MP":10,"MP_Max":10,"Stam":10,"Stam_Max":10,"Exp":0,"Level":0}
 
+let Player = {
+    "Stats":{"Strength":1,"Endurance":1,"Agility":1,"Defense":1,"Intelligence":1,"Wisdom":1,"Dexterity":1,"Resistance":1,"HP":10,"HP_Max":10,"MP":10,"MP_Max":10,"Stam":10,"Stam_Max":10,"Exp":0,"Level":0},
+    "Current_Action":1,
+    "Restore_Resource":function(resource_list, amount_list){
+        for (let i = 0; i < resource_list.length; i++) {
+            let stat = this.Stats[resource_list[i]];
+            let stat_max = this.Stats[resource_list[i] + "_Max"];
+            const total = stat + amount_list[i];
+            stat = (total > stat_max) ? stat_max : total;
+        }
+        UpdateCharacterBars();
+    }
+}
 
 
 
@@ -21,31 +34,31 @@ function UpdateTime(){
 }
 
 function UpdateStats(){
-    document.getElementById("stat_str").innerHTML = "Strength: " + CharacterStats.Strength;
-    document.getElementById("stat_end").innerHTML = "Endurance: " + CharacterStats.Endurance;
-    document.getElementById("stat_agi").innerHTML = "Agility: " + CharacterStats.Agility;
-    document.getElementById("stat_def").innerHTML = "Defense: " + CharacterStats.Defense;
-    document.getElementById("stat_int").innerHTML = "Intelligence: " + CharacterStats.Intelligence;
-    document.getElementById("stat_wis").innerHTML = "Wisdom: " + CharacterStats.Wisdom;
-    document.getElementById("stat_dex").innerHTML = "Dexterity: " + CharacterStats.Dexterity;
-    document.getElementById("stat_res").innerHTML = "Resistance: " + CharacterStats.Resistance;
+    document.getElementById("stat_str").innerHTML = "Strength: " + Player.Stats.Strength;
+    document.getElementById("stat_end").innerHTML = "Endurance: " + Player.Stats.Endurance;
+    document.getElementById("stat_agi").innerHTML = "Agility: " + Player.Stats.Agility;
+    document.getElementById("stat_def").innerHTML = "Defense: " + Player.Stats.Defense;
+    document.getElementById("stat_int").innerHTML = "Intelligence: " + Player.Stats.Intelligence;
+    document.getElementById("stat_wis").innerHTML = "Wisdom: " + Player.Stats.Wisdom;
+    document.getElementById("stat_dex").innerHTML = "Dexterity: " + Player.Stats.Dexterity;
+    document.getElementById("stat_res").innerHTML = "Resistance: " + Player.Stats.Resistance;
 }
 function UpdateCharacterBars(){
     function Trim(number){
         return ((number*100).toString().substring(0, 5)+"%");
     }
-    document.getElementById("char_level").innerHTML = ("Level " + CharacterStats.Level);
-    document.getElementById("char_exp").innerHTML = (CharacterStats.Exp + "/" + LevelExpReq[CharacterStats.Level]);
-    document.getElementById("exp_bar").style.setProperty('width', Trim(CharacterStats.Exp/LevelExpReq[CharacterStats.Level]));
+    document.getElementById("char_level").innerHTML = ("Level " + Player.Stats.Level);
+    document.getElementById("char_exp").innerHTML = (Player.Stats.Exp + "/" + LevelExpReq[Player.Stats.Level]);
+    document.getElementById("exp_bar").style.setProperty('width', Trim(Player.Stats.Exp/LevelExpReq[Player.Stats.Level]));
 
-    document.getElementById("char_hp").innerHTML = (CharacterStats.HP + "/" + CharacterStats.HP_Max);
-    document.getElementById("hp_bar").style.setProperty('width', Trim(CharacterStats.HP/CharacterStats.HP_Max));
+    document.getElementById("char_hp").innerHTML = (Player.Stats.HP + "/" + Player.Stats.HP_Max);
+    document.getElementById("hp_bar").style.setProperty('width', Trim(Player.Stats.HP/Player.Stats.HP_Max));
 
-    document.getElementById("char_stamina").innerHTML = (CharacterStats.Stam + "/" + CharacterStats.Stam_Max);
-    document.getElementById("stamina_bar").style.setProperty('width', Trim(CharacterStats.Stam/CharacterStats.Stam_Max));
+    document.getElementById("char_stamina").innerHTML = (Player.Stats.Stam + "/" + Player.Stats.Stam_Max);
+    document.getElementById("stamina_bar").style.setProperty('width', Trim(Player.Stats.Stam/Player.Stats.Stam_Max));
 
-    document.getElementById("char_mp").innerHTML = (CharacterStats.MP + "/" + CharacterStats.MP_Max);
-    document.getElementById("mana_bar").style.setProperty('width', Trim(CharacterStats.MP/CharacterStats.MP_Max));
+    document.getElementById("char_mp").innerHTML = (Player.Stats.MP + "/" + Player.Stats.MP_Max);
+    document.getElementById("mana_bar").style.setProperty('width', Trim(Player.Stats.MP/Player.Stats.MP_Max));
 
     return;
 }
@@ -131,7 +144,7 @@ function Add_Item(Item) {
 let TimeSinceSaved = 0;
 
 function Save_Game() {
-    let data = {"GameDate":GameDate, "CharacterStats":CharacterStats}
+    let data = {"GameDate":GameDate, "CharacterStats":Player.Stats}
     localStorage.setItem("test_data", JSON.stringify(data));
     console.log("Game Saved");
     return 0; //used to set TimeSinceSaved
@@ -157,7 +170,7 @@ function Load_Game() {
 
         GameDate = retrive_data.GameDate;
 
-        CharacterStats = retrive_data.CharacterStats;
+        Player.Stats = retrive_data.CharacterStats;
     }
 
         UpdateTime();

@@ -1,4 +1,4 @@
-import * as Data from './Data.js?v=10';
+import * as Data from './Data.js?v=11';
 
 
 let Game_Paused = false;
@@ -85,8 +85,8 @@ function UpdateDialougeUI(){
         let div_id_split = previous_options[i].getAttribute("id").split("-");
         let past_location = div_id_split[1];
         previous_options[i].removeEventListener("click", Data.locations.Areas[past_location].options[div_id_split[2]].click);
+        previous_options[i].remove();
     }
-    Option_Holder.innerHtml = "";
     
 
 

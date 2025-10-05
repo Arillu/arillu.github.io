@@ -1,31 +1,39 @@
 
 
 
-
-
-
-
 export const items = {
     type:{
-        tool:{
-            bed:[
-                {
-                    id:0,
-                    name:"ground",
-                    gain:{stat:['HP','MP','Stam'],value:[2,2,2]}
-                },
-                {
-                    id:1,
-                    name:"old mat",
-                    gain:{stat:['HP','MP','Stam'],value:[2,2,2]}
-                }
-            ]
-        },
-        weapon:[
+        tool:[
+            
+
+        ],
+        bed:[
+            {
+                id:0,
+                name:"ground",
+                stats:[["HP",1],["MP",1],["Stam",1]]
+            },
+            {
+                id:1,
+                name:"old mat",
+                stats:[["HP",2],["MP",2],["Stam",2]]
+            }
+        ],
+        MainHand:[
             {
                 id:0,
                 name:"Wood Sword",
-                slot:"MainHand"
+                type:"Weapon",
+                class:"sword",
+                stats:[["Strength",1]]
+            }
+        ],
+        Food:[
+            {
+                id:0,
+                name:"Stale Bread",
+                buffs:[["Food",150]],
+                stats:[]
             }
         ]
     }
@@ -39,7 +47,7 @@ export const actions = {
     sleep:function(player,a){//sleep from location menu
         let location_name = player.Current_Location;
         let action_info = locations.Areas[location_name].actions.sleep.item;
-        player.Restore_Resource(action_info.stat,action_info.value);
+        player.Restore_Resource(action_info.stats);
     },
     rest:function(player){//sleep from action menu
 
@@ -89,7 +97,7 @@ export const locations = {
                 return this.options
             },
             actions:{
-                sleep:{item:items.type.tool.bed[1]}
+                sleep:{item:items.type.bed[1]}
             },
             options:[
                 {

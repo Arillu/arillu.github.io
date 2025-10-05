@@ -1,4 +1,4 @@
-import * as Data from './Data.js?v=17';
+import * as Data from './Data.js?v=18';
 
 
 let Game_Paused = false;
@@ -6,9 +6,7 @@ let Game_Paused = false;
 const LevelExpReq = [100,400,1600]
 
 let GameDate = {"Year":1000,"Month":4,"Day":15,"Hour":7,"Minute":30}
-
 let Current_Location = "spawn_starting_building";
-
 let Current_Action = "nothing"
 
 let Player = {
@@ -31,16 +29,20 @@ let Player = {
         UpdateDialougeUI();
     },
 
-    Restore_Resource:function(resource_list, amount_list){
+    Restore_Resource:function(resource_list){
         for (let i = 0; i < resource_list.length; i++) {
-            let stat = this.Stats[resource_list[i]];
-            let stat_max = this.Stats[resource_list[i] + "_Max"];
-            const total = stat + amount_list[i];
+            let stat = this.Stats[resource_list[i][0]];
+            let stat_max = this.Stats[resource_list[i][0] + "_Max"];
+            let total = stat + resource_list[i][1];
             stat = (total > stat_max) ? stat_max : total;
         }
         UpdateCharacterBars();
     },
-    "Inventory":{}
+    //i= id, a=amount, e=enchant
+    Inventory:{
+        MainHand:[{i:0,a:1}],
+        Food:[{i:0,a:5}]
+    }
 }
 
 
@@ -183,44 +185,18 @@ function Increase_Time_Date(Minutes) {
 }
 
 
-/*
-start game
-load actions
--get current action when last saved
--get unlocked actions
--verify usable at location
--create buttons
-
-*/
-
-
-
-function Add_Item(Item) {
-    let Inventory = document.getElementById("inventory_top");
-    let Inventory_Count = Inventory.childElementCount;
-    let New_Inventory_Slot = document.createElement("div");
-    New_Inventory_Slot.setAttribute("class","inventory_slot");
-    New_Inventory_Slot.setAttribute("id","inventory_item_"+(Inventory_Count+1));
-    New_Inventory_Slot.innerHTML = Item;
-    Inventory.appendChild(New_Inventory_Slot);
-}
-
-
-
-
-
-
-
-
-
-
-
 
 
 let TimeSinceSaved = 0;
 
 function Save_Game() {
-    let savedata = {"GameDate":GameDate, "CharacterStats":Player.Stats,"Current_Location":Current_Location,"Current_Action":Current_Action}
+    let savedata = {
+        "GameDate":GameDate,
+        "CharacterStats":Player.Stats,
+        "Current_Location":Current_Location,
+        "Current_Action":Current_Action,
+        "Inventory":Player.Inventory
+    }
     localStorage.setItem("test_data", JSON.stringify(savedata));
     console.log("Game Saved");
     return 0; //used to set TimeSinceSaved
@@ -228,15 +204,12 @@ function Save_Game() {
 
 
 async function Game_Loop() {
-    
-    if (!Game_Paused){
+    while (!Game_Paused){
         Increase_Time_Date(1);
         Data.actions[Player.Current_Action](Player);
+        TimeSinceSaved = TimeSinceSaved >= 20 ? Save_Game() : TimeSinceSaved+1;
+        await new Promise(resolve => setTimeout(resolve, 1000));
     }
-    else{
-       console.log("game paused");
-    }
-    TimeSinceSaved = TimeSinceSaved >= 20 ? Save_Game() : TimeSinceSaved+1;
 }
 
 
@@ -248,18 +221,17 @@ function Load_Game() {
         GameDate = retrive_data.GameDate;
 
         Player.Stats = retrive_data.CharacterStats;
-        Player.Current_Action = retrive_data.Current_Action;
+        Current_Action = retrive_data.Current_Action;
         Current_Location = retrive_data.Current_Location;
+        Player.Inventory = retrive_data.Inventory
     }
 
-        UpdateTime();
-        UpdateStats();
-        UpdateCharacterBars();
+    UpdateTime();
+    UpdateStats();
+    UpdateCharacterBars();
+    UpdateActionUI();
+    UpdateDialougeUI();
 
-        UpdateActionUI();
-        UpdateDialougeUI();
-
-    setInterval(Game_Loop, 1000);
+    Game_Loop();
 }
 window.addEventListener('load', Load_Game, {once:true})
-

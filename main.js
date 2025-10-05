@@ -102,7 +102,7 @@ function UpdateDialougeUI(){
         option.setAttribute("class", "game_dialouge_option");
         option.setAttribute("id", "dialouge_" + Player.Current_Location + "_" + id);
         Option_Holder.appendChild(option);
-        option.addEventListener("click", () => dialouge_options[i].click(Player));
+        option.addEventListener("click", () => option_data.click(Player));
     }
 
     document.getElementById("game_dialouge_spoken").innerHTML = current_location.top_text;

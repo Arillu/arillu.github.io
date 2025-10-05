@@ -51,8 +51,7 @@ export const locations = {
                     "text":'<span style="color: red;">[Exit]</span> leave the building',
                     "id":0,
                     click:(player) => MoveTo(player,"spawn_outdoors")
-                },
-                {}
+                }
 
             ]
         },
@@ -67,9 +66,7 @@ export const locations = {
                     "text":'<span style="color: red;">[Enter]</span> Enter the building',
                     "id":0,
                     click:(player) => MoveTo(player,"spawn_starting_building")
-                },
-                {}
-
+                }
             ]            
         }
     }

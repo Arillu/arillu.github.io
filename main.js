@@ -14,15 +14,13 @@ let Player = {
     
     "Current_Action":"nothing",//For loading/saving
 
-    "Current_Location":{
-        get: function(){ 
-            return Current_Location;
-        },
-        set: function(value){
-            Current_Location = value;
+    get Current_Location(){ 
+        return Current_Location;
+    },
+    set Current_Location(value){
+        Current_Location = value;
 
-            UpdateDialougeUI();
-        }
+        UpdateDialougeUI();
     },
 
     "Restore_Resource":function(resource_list, amount_list){
@@ -253,13 +251,13 @@ function Load_Game() {
         Player.Current_Action = retrive_data.Current_Action;
         Current_Location = retrive_data.Current_Location;
     }
-        UpdateActionUI();
-        UpdateDialougeUI();
 
         UpdateTime();
         UpdateStats();
         UpdateCharacterBars();
 
+        UpdateActionUI();
+        UpdateDialougeUI();
 
     setInterval(Game_Loop, 1000);
 }

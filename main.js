@@ -1,4 +1,4 @@
-import * as Data from './Data.js?v=18';
+import * as Data from './Data.js?v=19';
 
 
 let Game_Paused = false;
@@ -34,7 +34,7 @@ let Player = {
             let stat = this.Stats[resource_list[i][0]];
             let stat_max = this.Stats[resource_list[i][0] + "_Max"];
             let total = stat + resource_list[i][1];
-            stat = (total > stat_max) ? stat_max : total;
+            this.Stats[resource_list[i][0]] = (total > stat_max) ? stat_max : total;
         }
         UpdateCharacterBars();
     },

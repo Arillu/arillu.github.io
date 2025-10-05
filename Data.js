@@ -36,7 +36,9 @@ export const actions = {
         //do nothing
         console.log("doing nothing");
     },
-    sleep:function(player){//sleep from location menu
+    sleep:function(player,a){//sleep from location menu
+        console.log(player);
+        console.log(a);
         let location_name = player.Current_location;
         console.log("trying to sleep at " + location_name);
         let action_info = locations.Areas[location_name].actions.sleep.item;

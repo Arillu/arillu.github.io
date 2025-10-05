@@ -93,7 +93,7 @@ function UpdateDialougeUI(){
 
 //create new options
     let current_location = Data.locations.Areas[Player.Current_Location];
-    let dialouge_options = current_location.options.get_unlocked_options();
+    let dialouge_options = current_location.get_unlocked_options();
     function CreateDialougeOption(option_data){
         let text = option_data.text;
         let id = option_data.id;

@@ -149,7 +149,7 @@ body {
 .char_bottom_holder {
     z-index: 4;
     position: absolute;
-    top: 158px;
+    top: 160px;
     height: 150px;
     width: 394px;
     left: 13px;
@@ -163,7 +163,7 @@ body {
     background-color: rgba(126, 126, 126, 0.5);
     border-right: 1px;
     border-right-color: #ffffff;
-    border-right-style: dotted;
+    border-right-style: dashed;
 }
 .char_bottom_split2 {
     z-index: 4;
@@ -174,7 +174,7 @@ body {
     background-color: rgba(126, 126, 126, 0.5);
     border-left: 1px;
     border-left-color: #ffffff;
-    border-left-style: dotted;
+    border-left-style: dashed;
 }
 .char_bottom_section {
     position: relative;
@@ -196,13 +196,24 @@ body {
 }
 .character_buttons {
     float: left;
-    margin-left: 10;
     width: 118px;
     height: 100%;
     background-color: rgba(126, 126, 126);
     line-height: 26px;
     text-wrap: nowrap;
     text-align: center;
+}
+#character_button_stats{
+    position: relative;
+    left: 10px;
+}
+#character_button_equipment{
+    position: relative;
+    left: 20px;
+}
+#character_button_tools{
+    position: relative;
+    left: 30px;    
 }
 .character_buttons:hover {
   background-color: #04AA6D;

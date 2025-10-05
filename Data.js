@@ -38,6 +38,7 @@ export const actions = {
     },
     sleep:function(player){//sleep from location menu
         let location_name = player.Current_location;
+        console.log("trying to sleep at " + location_name);
         let action_info = locations.Areas[location_name].actions.sleep.item;
         player.Restore_Resource(action_info.stat,action_info.value);
     },

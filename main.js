@@ -1,19 +1,30 @@
-import * as ItemData from './inventory.js';
+import * as Data from './Data.js';
 
 
 let Game_Paused = false;
-
-let testsleeping = function(){
-    ItemData.items.type.beds[0].use(Player);
-}
 
 const LevelExpReq = [100,400,1600]
 
 let GameDate = {"Year":1000,"Month":4,"Day":15,"Hour":7,"Minute":30}
 
+let Current_Location = "spawn_starting_building";
+
 let Player = {
-    "Stats":{"Strength":1,"Endurance":1,"Agility":1,"Defense":1,"Intelligence":1,"Wisdom":1,"Dexterity":1,"Resistance":1,"HP":10,"HP_Max":10,"MP":10,"MP_Max":10,"Stam":10,"Stam_Max":10,"Exp":0,"Level":0},
-    "Current_Action":1,
+    "Stats":{"Strength":1,"Endurance":1,"Agility":1,"Defense":1,"Intelligence":1,"Wisdom":1,"Dexterity":1,"Resistance":1,"HP":5,"HP_Max":10,"MP":5,"MP_Max":10,"Stam":5,"Stam_Max":10,"Exp":0,"Level":0},
+    
+    "Current_Action":"nothing",//For loading/saving
+
+    "Current_Location":{
+        get: function(){ 
+            return Current_Location;
+        },
+        set: function(value){
+            Current_Location = value;
+
+            UpdateDialougeUI();
+        }
+    },
+
     "Restore_Resource":function(resource_list, amount_list){
         for (let i = 0; i < resource_list.length; i++) {
             let stat = this.Stats[resource_list[i]];
@@ -22,7 +33,8 @@ let Player = {
             stat = (total > stat_max) ? stat_max : total;
         }
         UpdateCharacterBars();
-    }
+    },
+    "Inventory":{}
 }
 
 
@@ -61,6 +73,45 @@ function UpdateCharacterBars(){
     document.getElementById("mana_bar").style.setProperty('width', Trim(Player.Stats.MP/Player.Stats.MP_Max));
 
     return;
+}
+function UpdateActionUI(){
+
+}
+function UpdateDialougeUI(){
+    let Option_Holder = document.getElementById("game_dialouge_options_holder");
+
+
+//clear old options
+    let previous_options = Option_Holder.getElementsByClassName("game_dialouge_option");
+    for (let i = 0; i < previous_options.length; i++) {
+        let div_id_split = previous_options[i].getAttribute("id").split("_");
+        let past_location = div_id_split[1];
+        previous_options[i].removeEventListener("click", past_location.options[div_id_split[2]].click);
+    }
+    Option_Holder.innerHtml = "";
+    
+
+
+
+//create new options
+    let current_location = Data.locations.Areas[Player.Current_Location];
+    let dialouge_options = current_location.options.get_unlocked_options();
+    function CreateDialougeOption(text, id){
+        let text = dialouge_options[i].text;
+        let id = dialouge_options[i].id;
+        let option = document.createElement("div");
+        option.innerHTML = text;
+        option.setAttribute("class", "game_dialouge_option");
+        option.setAttribute("id", "dialouge_" + Player.Current_Location + "_" + id);
+        Option_Holder.appendChild(option);
+        option.addEventListener("click", () => dialouge_options[i].click(Player));
+    }
+
+    document.getElementById("game_dialouge_spoken").innerHTML = current_location.top_text;
+
+    for (let i = 0; i < dialouge_options.length; i++) {
+        CreateDialougeOption(dialouge_options[i]);
+    }
 }
 
 
@@ -119,6 +170,33 @@ function Increase_Time_Date(Minutes) {
     return
 }
 
+
+let Action = {
+    Available:{},
+    InAction:false,
+    Current:{},
+    Start:function(){
+
+    },
+    Stop:function(){
+
+    }
+}
+/*
+start game
+load actions
+-get current action when last saved
+-get unlocked actions
+-verify usable at location
+-create buttons
+
+*/
+function Move_Location(){
+
+}
+
+
+
 function Add_Item(Item) {
     let Inventory = document.getElementById("inventory_top");
     let Inventory_Count = Inventory.childElementCount;
@@ -144,8 +222,8 @@ function Add_Item(Item) {
 let TimeSinceSaved = 0;
 
 function Save_Game() {
-    let data = {"GameDate":GameDate, "CharacterStats":Player.Stats}
-    localStorage.setItem("test_data", JSON.stringify(data));
+    let savedata = {"GameDate":GameDate, "CharacterStats":Player.Stats,"Current_Location":Current_Location}
+    localStorage.setItem("test_data", JSON.stringify(savedata));
     console.log("Game Saved");
     return 0; //used to set TimeSinceSaved
 }
@@ -155,6 +233,7 @@ async function Game_Loop() {
     
     if (!Game_Paused){
         Increase_Time_Date(1);
+        Data.actions[Player.Current_Action]();
     }
     else{
        console.log("game paused");
@@ -171,7 +250,11 @@ function Load_Game() {
         GameDate = retrive_data.GameDate;
 
         Player.Stats = retrive_data.CharacterStats;
+        Player.Current_Action = retrive_data.Current_Action;
+        Current_Location = retrive_data.Current_Location;
     }
+        UpdateActionUI();
+        UpdateDialougeUI();
 
         UpdateTime();
         UpdateStats();
@@ -181,3 +264,4 @@ function Load_Game() {
     setInterval(Game_Loop, 1000);
 }
 window.addEventListener('load', Load_Game, {once:true})
+

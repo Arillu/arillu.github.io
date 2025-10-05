@@ -1,4 +1,4 @@
-import * as Data from './Data.js?v=13';
+import * as Data from './Data.js?v=14';
 
 
 let Game_Paused = false;
@@ -9,10 +9,18 @@ let GameDate = {"Year":1000,"Month":4,"Day":15,"Hour":7,"Minute":30}
 
 let Current_Location = "spawn_starting_building";
 
+let Current_Action = "nothing"
+
 let Player = {
     "Stats":{"Strength":1,"Endurance":1,"Agility":1,"Defense":1,"Intelligence":1,"Wisdom":1,"Dexterity":1,"Resistance":1,"HP":5,"HP_Max":10,"MP":5,"MP_Max":10,"Stam":5,"Stam_Max":10,"Exp":0,"Level":0},
     
-    "Current_Action":"nothing",//For loading/saving
+    get Current_Action(){ 
+        return Current_Action;
+    },
+    set Current_Action(value){
+        Current_Action = value;
+
+    },
 
     get Current_Location(){ 
         return Current_Location;
@@ -23,7 +31,7 @@ let Player = {
         UpdateDialougeUI();
     },
 
-    "Restore_Resource":function(resource_list, amount_list){
+    Restore_Resource:function(resource_list, amount_list){
         for (let i = 0; i < resource_list.length; i++) {
             let stat = this.Stats[resource_list[i]];
             let stat_max = this.Stats[resource_list[i] + "_Max"];
@@ -175,17 +183,6 @@ function Increase_Time_Date(Minutes) {
 }
 
 
-let Action = {
-    Available:{},
-    InAction:false,
-    Current:{},
-    Start:function(){
-
-    },
-    Stop:function(){
-
-    }
-}
 /*
 start game
 load actions
@@ -195,9 +192,6 @@ load actions
 -create buttons
 
 */
-function Move_Location(){
-
-}
 
 
 
@@ -226,7 +220,7 @@ function Add_Item(Item) {
 let TimeSinceSaved = 0;
 
 function Save_Game() {
-    let savedata = {"GameDate":GameDate, "CharacterStats":Player.Stats,"Current_Location":Current_Location}
+    let savedata = {"GameDate":GameDate, "CharacterStats":Player.Stats,"Current_Location":Current_Location,"Current_Action":Current_Action}
     localStorage.setItem("test_data", JSON.stringify(savedata));
     console.log("Game Saved");
     return 0; //used to set TimeSinceSaved
@@ -237,7 +231,7 @@ async function Game_Loop() {
     
     if (!Game_Paused){
         Increase_Time_Date(1);
-        Data.actions[Player.Current_Action]();
+        Data.actions[Player.Current_Action](Player);
     }
     else{
        console.log("game paused");

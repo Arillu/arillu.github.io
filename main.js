@@ -1,4 +1,4 @@
-import * as Data from './Data.js?v=9';
+import * as Data from './Data.js?v=10';
 
 
 let Game_Paused = false;
@@ -82,7 +82,7 @@ function UpdateDialougeUI(){
 //clear old options
     let previous_options = Option_Holder.getElementsByClassName("game_dialouge_option");
     for (let i = 0; i < previous_options.length; i++) {
-        let div_id_split = previous_options[i].getAttribute("id").split("_");
+        let div_id_split = previous_options[i].getAttribute("id").split("-");
         let past_location = div_id_split[1];
         previous_options[i].removeEventListener("click", Data.locations.Areas[past_location].options[div_id_split[2]].click);
     }
@@ -100,7 +100,7 @@ function UpdateDialougeUI(){
         let option = document.createElement("div");
         option.innerHTML = text;
         option.setAttribute("class", "game_dialouge_option");
-        option.setAttribute("id", "dialouge_" + Player.Current_Location + "_" + id);
+        option.setAttribute("id", "dialouge-" + Player.Current_Location + "-" + id);
         Option_Holder.appendChild(option);
         option.addEventListener("click", () => option_data.click(Player));
     }

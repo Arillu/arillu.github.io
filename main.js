@@ -96,9 +96,9 @@ function UpdateDialougeUI(){
 //create new options
     let current_location = Data.locations.Areas[Player.Current_Location];
     let dialouge_options = current_location.options.get_unlocked_options();
-    function CreateDialougeOption(text, id){
-        let text = dialouge_options[i].text;
-        let id = dialouge_options[i].id;
+    function CreateDialougeOption(option_data){
+        let text = option_data.text;
+        let id = option_data.id;
         let option = document.createElement("div");
         option.innerHTML = text;
         option.setAttribute("class", "game_dialouge_option");

@@ -1,4 +1,4 @@
-import * as Data from './Data.js?v=11';
+import * as Data from './Data.js?v=12';
 
 
 let Game_Paused = false;
@@ -75,18 +75,19 @@ function UpdateCharacterBars(){
 function UpdateActionUI(){
 
 }
+
+
+let current_dialouge_options = [];
 function UpdateDialougeUI(){
     let Option_Holder = document.getElementById("game_dialouge_options_holder");
 
 
 //clear old options
-    let previous_options = Option_Holder.getElementsByClassName("game_dialouge_option");
-    for (let i = 0; i < previous_options.length; i++) {
-        let div_id_split = previous_options[i].getAttribute("id").split("-");
-        let past_location = div_id_split[1];
-        previous_options[i].removeEventListener("click", Data.locations.Areas[past_location].options[div_id_split[2]].click);
-        previous_options[i].remove();
+    for (let i = 0; i < current_dialouge_options.length; i++) {
+        current_dialouge_options[i].element.removeEventListener("click", current_dialouge_options[i].eventfunction);
+        //current_dialouge_options[i].element.remove();
     }
+    current_dialouge_options = [];
     
 
 
@@ -102,7 +103,12 @@ function UpdateDialougeUI(){
         option.setAttribute("class", "game_dialouge_option");
         option.setAttribute("id", "dialouge-" + Player.Current_Location + "-" + id);
         Option_Holder.appendChild(option);
-        option.addEventListener("click", () => option_data.click(Player));
+
+        let eventfunction = function(){
+            option_data.click(Player)
+        }
+        current_dialouge_options.push({"element":option,"eventfunction":eventfunction})
+        option.addEventListener("click", eventfunction);
     }
 
     document.getElementById("game_dialouge_spoken").innerHTML = current_location.top_text;

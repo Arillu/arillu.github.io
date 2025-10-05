@@ -1,4 +1,4 @@
-import * as Data from './Data.js?v=12';
+import * as Data from './Data.js?v=13';
 
 
 let Game_Paused = false;
@@ -77,7 +77,7 @@ function UpdateActionUI(){
 }
 
 
-let current_dialouge_options = [];
+let current_dialouge_options = [];//used to remove event listeners
 function UpdateDialougeUI(){
     let Option_Holder = document.getElementById("game_dialouge_options_holder");
 
@@ -85,7 +85,7 @@ function UpdateDialougeUI(){
 //clear old options
     for (let i = 0; i < current_dialouge_options.length; i++) {
         current_dialouge_options[i].element.removeEventListener("click", current_dialouge_options[i].eventfunction);
-        //current_dialouge_options[i].element.remove();
+        current_dialouge_options[i].element.remove();
     }
     current_dialouge_options = [];
     

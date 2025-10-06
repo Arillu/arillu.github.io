@@ -3,23 +3,39 @@
 
 export const items = {
     type:{
-        tool:[
-            
-
+        tool:[//all equipable tools go here
+            {
+                id:0,
+                name:"old pickaxe",
+                class:"Pickaxe",
+                slot:"Tool",
+                usage:"Equip",
+                tier: 0
+            },
+            {
+                id:1,
+                name:"new pickaxe",
+                class:"Pickaxe",
+                slot:"Tool",
+                usage:"Equip",
+                tier: 1
+            },
+            {
+                id:2,
+                name:"old mat",
+                class:"Bed",
+                slot:"Tool",
+                usage:"Equip",
+                tier: 0,
+                action_stats:[["HP",2],["MP",2],["Stam",2]]
+            }
         ],
         bed:[
             {
                 id:0,
                 name:"ground",
                 tier: 0,
-                stats:[["HP",1],["MP",1],["Stam",1]]
-            },
-            {
-                id:1,
-                name:"old mat",
-                class:"tool",
-                tier: 0,
-                stats:[["HP",2],["MP",2],["Stam",2]]
+                action_stats:[["HP",1],["MP",1],["Stam",1]]
             }
         ],
         weapon:[
@@ -30,9 +46,20 @@ export const items = {
                 class:"Sword",
                 desc:"A sword made from low quality wood",
                 statdesc:"Strength +1",
-                usage:"equip",
+                usage:"Equip",
                 tier: 0,
                 stats:[["Strength",1]]
+            },
+            {
+                id:1,
+                name:"Iron Sword",
+                slot:"Main Hand",
+                class:"Sword",
+                desc:"A good quality sword forged from iron",
+                statdesc:"Strength +10",
+                usage:"Equip",
+                tier: 1,
+                stats:[["Strength",10]]
             }
         ],
         consumable:[
@@ -56,7 +83,7 @@ export const actions = {
     sleep:function(player,a){//sleep from location menu
         let location_name = player.Current_Location;
         let action_info = locations.Areas[location_name].actions.sleep.item;
-        player.Restore_Resource(action_info.stats);
+        player.Restore_Resource(action_info.action_stats);
     },
     rest:function(player){//sleep from action menu
 
@@ -106,7 +133,7 @@ export const locations = {
                 return this.options
             },
             actions:{
-                sleep:{item:items.type.bed[1]}
+                sleep:{item:items.type.tool[2]}
             },
             options:[
                 {

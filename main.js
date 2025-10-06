@@ -38,14 +38,27 @@ let Player = {
         }
         UpdateCharacterBars();
     },
-
-    AddItem:function(){
-
-    },
     //i= id, a=amount, e=enchant, div=item slot div(delete from save), event=item slot click function(delete from save)
     Inventory:{
-        weapon:[{i:0,a:1}],
+        weapon:[{i:0,a:1},{i:1,a:5}],
+        tool:[{i:0,a:1},{i:1,a:7},{i:2,a:1}],
         consumable:[{i:0,a:5}]
+    },
+    Equipped:{//t= type
+        Armor:{
+            "Main Hand":{},
+            "Off Hand":{},
+            "2Hand":{},
+            "Head":{},
+            "Chest":{},
+            "Feet":{},
+            "Hands":{},
+            "Legs":{},
+            "Acs1":{},
+            "Acs2":{},
+            "Acs3":{}
+        },
+        Tools:[],//only 1 per type (cant equip two pickaxes)
     }
 }
 
@@ -206,13 +219,23 @@ function TrimInventoryData(){//for saving the data
     });
     return Trimed_Inventory
 }
-function DeleteInventoryItem(Key, Num){
-    Item = Player.Inventory[Key][Num]
-    if (Item.event){
-        Item.div.removeEventListener("click", Item.event);
-        Item.div.remove();
+
+function DeleteInventoryItem(Key, Num, Amount){
+    let Item = Player.Inventory[Key][Num]
+    let newAmount = Amount ? ((Item.a-Amount)< 1 ? 0 : (Item.a-Amount)): 0
+    if (newAmount===0){
+        if (Item.event){
+            Item.div.removeEventListener("click", Item.event);
+            Item.div.remove();
+        }
+        Player.Inventory[Key].splice(Num,1)
     }
-    delete Player.Inventory[Key][Num]
+    else{
+        Item.a = newAmount;
+        Item.div.getElementsByClassName("inventory_slot_amount")[0].innerHTML = "x" + Item.a
+    }
+    document.getElementById("inventory_item_info").setAttribute("hidden","");
+    Item_Currently_Viewing = null;
 }
 
 function CreateInventorySlot(Type, SlotId){
@@ -231,8 +254,8 @@ function CreateInventorySlot(Type, SlotId){
             Item_click_spam_debounce = true;
             function change_info(){
                 let ItemData = Data.items.type[Type][SlotId];
-                document.getElementById("item_info_type").innerHTML = Type +"/"+ (ItemData.class ? ItemData.class : "") + (ItemData.slot ? "/" + ItemData.slot : "");
-                document.getElementById("item_info_rarity").innerHTML = "Tier " + ItemData.tier ? ItemData.tier : "0";
+                document.getElementById("item_info_type").innerHTML = (ItemData.class ? ItemData.class : "") + (ItemData.slot ? "/" + ItemData.slot : "");
+                document.getElementById("item_info_rarity").innerHTML = "Tier " + (ItemData.tier ? ItemData.tier : "0");
                 document.getElementById("item_info_stats").innerHTML = ItemData.statdesc ? ItemData.statdesc : "";
                 document.getElementById("item_info_description").innerHTML = ItemData.desc ? ItemData.desc : "";
                 if (ItemData.usage){
@@ -246,17 +269,17 @@ function CreateInventorySlot(Type, SlotId){
             
             if (Item_Info_Div.hasAttribute("hidden")){
                 Item.div.after(Item_Info_Div)
-                Item_Currently_Viewing = Item;
+                Item_Currently_Viewing = [Item, Type];
                 change_info()
                 Item_Info_Div.removeAttribute("hidden");
             }
-            else if(Item_Currently_Viewing === Item){
+            else if(Item_Currently_Viewing[0] === Item){
                 Item_Info_Div.setAttribute("hidden","");
                 Item_Currently_Viewing = null;
             }
             else{
                 Item.div.after(Item_Info_Div)
-                Item_Currently_Viewing = Item;
+                Item_Currently_Viewing = [Item, Type];
                 change_info()
             }
             Item_click_spam_debounce = false;
@@ -267,34 +290,150 @@ function CreateInventorySlot(Type, SlotId){
 
 function AddInventoryItem(Id, Type, amount, enchant){
     let ItemData = Data.items.type[Type][Id];
-    let Item = Object.assign({},{i:ItemData.id,a:amount});
+    for (let j = 0; j < Player.Inventory[Type].length; j++) {
+        let item = Player.Inventory[Type][j];
+        if (item.i === Id){
+            item.a = item.a + 1
+            item.div.getElementsByClassName("inventory_slot_amount")[0].innerHTML = "x" + item.a;
+            return;
+        }
+    }
+    let NewItem = JSON.parse(JSON.stringify({i:ItemData.id,a:amount}));
     if (!Player.Inventory[Type]){
         Player.Inventory[Type] = [];
     }
-    Player.Inventory[Type].push(Item);
+    Player.Inventory[Type].push(NewItem);
     let Slotnum = Player.Inventory[Type].length - 1;
 
     CreateInventorySlot(Type, Slotnum);
     
 }
+function UnEquipItem(slot, tool_location_id){
+    function removestats(){
+        //remove stats
 
 
-function SetupInventoryItemInfo(){
 
-    document.getElementById("item_info_use").addEventListener("click", function(){
-        //equip or connsume item
-    });
-    document.getElementById("item_info_sell").addEventListener("click", function(){
-        //sell
-    });
-    document.getElementById("item_info_delete").addEventListener("click", function(){
-        //delete
-    });
+
+
+
+
+    }
+    if (slot == "Tool"){
+        removestats();
+        AddInventoryItem(Player.Equipped.Tools[tool_location_id].i,Player.Equipped.Tools[tool_location_id].t,1);
+        Player.Equipped.Tools.splice(tool_location_id,1);
+    }
+    else{
+        removestats();
+        AddInventoryItem(Player.Equipped.Armor[slot].i,Player.Equipped.Armor[slot].t,1);
+        Player.Equipped.Armor[slot] = {};
+    }
+}
+function EquipItem(Type,SlotId){
+    let Item = Item_Currently_Viewing[0];
+    let Item_Data = Data.items.type[Type][Item.i];
+    let slot = Item_Data.slot;
+    //need too add unequip current and remove stats
+    let newitem = JSON.parse(JSON.stringify({i:Item_Data.id,t:Type}));
+    function addstats(){
+        if (Item_Data.stats){
+            //add stats
+
+
+
+
+
+
+
+
+
+
+
+
+        }
+    }
+    if (slot == "Tool"){
+        for (let i = 0; i < Player.Equipped.Tools.length; i++) {
+            if (Data.items.type.tool[Player.Equipped.Tools[i].i].class==Item_Data.class){
+                UnEquipItem(slot,i);
+                break;
+            }
+        }
+        if (Player.Equipped.Tools.length < 10){
+            Player.Equipped.Tools.push(newitem);
+            DeleteInventoryItem(Type,SlotId,1);
+            addstats();
+        }else{
+            console.log("too many tools equipped")
+        }
+    }
+    else if (slot){
+        if (Player.Equipped.Armor[slot].i !== undefined){//item currently equipped
+            UnEquipItem(slot);
+        }
+        Player.Equipped.Armor[slot] = newitem;
+        DeleteInventoryItem(Type,SlotId,1);
+        addstats();
+    }
+    else{
+        console.log("cant equip this item")
+    }
+    
 }
 
+function SetupInventoryItemInfo(){
+    let debounce = false;
+    function getslotid(){
+        let inv = Player.Inventory[Item_Currently_Viewing[1]]
+        for (let i = 0; i < inv.length; i++) {
+            if (inv[i] === Item_Currently_Viewing[0]){
+                return i;
+            }
+        }
+        return null
+    }
+    document.getElementById("item_info_use").addEventListener("click", function(){
+        if (!debounce){
+            debounce = true;
+            let SlotId = getslotid();
+            if (SlotId !== null){
+                if(Data.items.type[Item_Currently_Viewing[1]][Item_Currently_Viewing[0].i].usage === "Equip"){
+                    EquipItem(Item_Currently_Viewing[1], SlotId);
+                }
+                else{
+                    //consume item
+                }
+            }
+            else{
+                console.log("failed to equip/eat item");
+            }          
 
+            debounce = false;
+        }
+    });
+    document.getElementById("item_info_sell").addEventListener("click", function(){
+        if (!debounce){
+            debounce = true;
+            
 
-
+            debounce = false;
+        }
+    });
+    document.getElementById("item_info_delete").addEventListener("click", function(){
+        if (!debounce){
+            debounce = true;
+            let SlotId = getslotid();
+            if (SlotId !== null){
+                DeleteInventoryItem(Item_Currently_Viewing[1], SlotId);
+            }
+            else{
+                console.log("failed to delete item");
+            }
+            debounce = false;
+        }
+    });
+}
 
 let TimeSinceSaved = 0;
 
@@ -345,7 +484,7 @@ function Load_Game() {
     UpdateCharacterBars();
     UpdateActionUI();
     UpdateDialougeUI();
-
+    SetupInventoryItemInfo();
     Game_Loop();
 }
 window.addEventListener('load', Load_Game, {once:true})

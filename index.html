@@ -6,7 +6,7 @@
         <link rel="stylesheet" href="style.css">
     </head>
     <body>
-        <script type="module" src="main.js?v=19"></script>
+        <script type="module" src="main.js?v=21"></script>
         <script src="buttons.js"></script>
         <div id="main_game">
             <div id="game_section_div">
@@ -140,13 +140,19 @@
                         </div>
                     </div>
                 </div>
-
                 <div id="game_section_bottom_div">
                     <div id="inventory_div">
                         <div class="inner_box_div">
                             <div id="inventory_top">
-                                <div class="inventory_slot" id="inventory_item_1">Wood Sword</div>
-
+                                <div id="inventory_item_info" hidden>
+                                    <div id="item_info_type">test</div>
+                                    <div id="item_info_rarity">test</div>
+                                    <div id="item_info_stats">test</div>
+                                    <div id="item_info_description">test</div>
+                                    <div id="item_info_use" class="item_info_button">test</div>
+                                    <div id="item_info_sell" class="item_info_button" hidden>Sell</div>
+                                    <div id="item_info_delete" class="item_info_button">Delete</div>
+                                </div>
                             </div>
                             <div id="inventory_bottom">
                                 <button type="button" class="inventory_buttons" id="inventory_button_delete">delete</button>
@@ -162,7 +168,7 @@
                                         <div id="skill_list_item_name_1" class="skill_name_label">[1]Breathing lvl 0</div>
                                         <div id="skill_list_item_exp_label_1" class="skill_exp_label">0/100</div>
                                         <div class="skill_exp_bar_holder">
-                                            <div id="skill_list_item_exp_bar_1" class="skill_exp_bar"></div>
+                                        <div id="skill_list_item_exp_bar_1" class="skill_exp_bar"></div>
                                         </div>
                                     </div>
                                 </div>

@@ -11,27 +11,37 @@ export const items = {
             {
                 id:0,
                 name:"ground",
+                tier: 0,
                 stats:[["HP",1],["MP",1],["Stam",1]]
             },
             {
                 id:1,
                 name:"old mat",
+                class:"tool",
+                tier: 0,
                 stats:[["HP",2],["MP",2],["Stam",2]]
             }
         ],
-        MainHand:[
+        weapon:[
             {
                 id:0,
                 name:"Wood Sword",
-                type:"Weapon",
-                class:"sword",
+                slot:"Main Hand",
+                class:"Sword",
+                desc:"A sword made from low quality wood",
+                statdesc:"Strength +1",
+                usage:"equip",
+                tier: 0,
                 stats:[["Strength",1]]
             }
         ],
-        Food:[
+        consumable:[
             {
                 id:0,
                 name:"Stale Bread",
+                class:"food",
+                tier: 0,
+                usage:"Eat",
                 buffs:[["Food",150]],
                 stats:[]
             }
@@ -42,7 +52,6 @@ export const items = {
 export const actions = {
     nothing:function(player){
         //do nothing
-        console.log("doing nothing");
     },
     sleep:function(player,a){//sleep from location menu
         let location_name = player.Current_Location;

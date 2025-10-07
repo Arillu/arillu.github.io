@@ -296,7 +296,7 @@ function CreateInventorySlot(Type, SlotId){
         if (!Item_click_spam_debounce){
             Item_click_spam_debounce = true;
             function change_info(){
-                let ItemData = Data.items.type[Type][SlotId];
+                let ItemData = Data.items.type[Type][Item.i];
                 document.getElementById("item_info_type").innerHTML = (ItemData.class ? ItemData.class : "") + (ItemData.slot ? "/" + ItemData.slot : "");
                 document.getElementById("item_info_rarity").innerHTML = "Tier " + (ItemData.tier ? ItemData.tier : "0");
                 document.getElementById("item_info_stats").innerHTML = ItemData.statdesc ? ItemData.statdesc : "";
@@ -410,12 +410,13 @@ function EquipItem(Type,SlotId){
         }
     }
     if (slot == "Tool"){
-        for (let i = 0; i < tools.length; i++) {
-            if (Data.items.type.tool[tools[i].i].class == Item_Data.class){
-                UnEquipItem(slot,i);
-                break;
+        tools.every((item, location)=>{
+            if (Data.items.type.tool[item.i].class == Item_Data.class){
+                UnEquipItem(slot, location);
+                return false
             }
-        }
+            return true;
+        });
         if (tools.length < 10){
             tools.push(newitem);
             DeleteInventoryItem(Type,SlotId,1);
@@ -450,11 +451,11 @@ function SetupInventoryItemInfo(){
     let debounce = false;
     function getslotid(){
         let inv = Player.Inventory[Item_Currently_Viewing[1]]
-        for (let i = 0; i < inv.length; i++) {
-            if (inv[i] === Item_Currently_Viewing[0]){
-                return i;
+        inv.forEach((item, slotnum)=>{
+            if (item === Item_Currently_Viewing[0]){
+                return slotnum;
             }
-        }
+        });
         return null
     }
     document.getElementById("item_info_use").addEventListener("click", function(){

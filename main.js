@@ -111,28 +111,21 @@ function UpdateActionUI(){
 let current_dialouge_options = [];//used to remove event listeners
 function UpdateDialougeUI(){
     let Option_Holder = document.getElementById("game_dialouge_options_holder");
-
-
-//clear old options
-    for (let i = 0; i < current_dialouge_options.length; i++) {
-        current_dialouge_options[i].element.removeEventListener("click", current_dialouge_options[i].eventfunction);
-        current_dialouge_options[i].element.remove();
-    }
+    //delete old options
+    current_dialouge_options.forEach((option)=>{
+        option.element.removeEventListener("click", option.eventfunction);
+        option.element.remove();
+    });
     current_dialouge_options = [];
     
-
-
-
-//create new options
+    //create new options
     let current_location = Data.locations.Areas[Player.Current_Location];
     let dialouge_options = current_location.get_unlocked_options();
     function CreateDialougeOption(option_data){
-        let text = option_data.text;
-        let id = option_data.id;
         let option = document.createElement("div");
-        option.innerHTML = text;
+        option.innerHTML = option_data.text;
         option.setAttribute("class", "game_dialouge_option");
-        option.setAttribute("id", "dialouge-" + Player.Current_Location + "-" + id);
+        option.setAttribute("id", "dialouge-" + Player.Current_Location + "-" + option_data.id);
         Option_Holder.appendChild(option);
 
         let eventfunction = function(){
@@ -143,57 +136,57 @@ function UpdateDialougeUI(){
     }
 
     document.getElementById("game_dialouge_spoken").innerHTML = current_location.top_text;
-
-    for (let i = 0; i < dialouge_options.length; i++) {
-        CreateDialougeOption(dialouge_options[i]);
-    }
+    dialouge_options.forEach((option)=>{
+        CreateDialougeOption(option);
+    });
 }
 
 
 function UpdateEquipmentUI(){
-    console.log("update equipment")
+
+    function updateslot(div, div_text, has_item){
+        div.innerHTML = div_text;
+        if (has_item){
+            div.removeAttribute("style");
+        }else{
+            div.setAttribute("style","color: rgb(161, 161, 161);");
+        }
+    }
+
     let j = 1;
     for (; j < Player.Equipped.Tools.length+1; j++) {
         let div = document.getElementById("tool" + j)
-        div.innerHTML = Data.items.type[(Player.Equipped.Tools[j-1].t)][(Player.Equipped.Tools[j-1].i)].name;
-        div.removeAttribute("style");
+        updateslot(div, Data.items.type[(Player.Equipped.Tools[j-1].t)][(Player.Equipped.Tools[j-1].i)].name, true)
     }
     for (; j < 11; j++){
-        let div = document.getElementById("tool" + j)
-        div.innerHTML = "no tool";
-        div.setAttribute("style","color: rgb(161, 161, 161);");
+        updateslot(document.getElementById("tool" + j), "no tool", false)
     }
+
+
     Object.keys(Player.Equipped.Armor).forEach((key)=>{
         let div = document.getElementById("eq_" + key.replace(" ","_"))
         let len = Object.keys(Player.Equipped.Armor[key]).length;
         if (key == "2Hand"){
-            if (len > 0) {
+            if (len > 0){
                 //2Hand comes after Mainhand and offhand in the loop
-                let div1 = document.getElementById("eq_Main_Hand");
-                let div2 = document.getElementById("eq_Off_Hand");
-                div1.innerHTML = Data.items.type[(Player.Equipped.Armor[key].t)][(Player.Equipped.Armor[key].i)].name;
-                div1.removeAttribute("style");
-                div2.innerHTML = "-"
-                div2.removeAttribute("style");
+                updateslot(document.getElementById("eq_Main_Hand"), Data.items.type[(Player.Equipped.Armor[key].t)][(Player.Equipped.Armor[key].i)].name, true);
+                updateslot(document.getElementById("eq_Off_Hand"), "-", true);
             }
         }
         else if (key=="Accessory") {
-            let i = 0;
-            for (; i < Player.Equipped.Armor[key].length; i++){
-                document.getElementById("eq_Acs"+(i+1)).removeAttribute("style");
-                document.getElementById("eq_Acs"+(i+1)).innerHTML = Data.items.type[(Player.Equipped.Armor[key][i].t)][(Player.Equipped.Armor[key][i].i)].name;
-            }
-            for (; i < 3; i++){
-                document.getElementById("eq_Acs"+(i+1)).setAttribute("style","color: rgb(161, 161, 161);");
-                document.getElementById("eq_Acs"+(i+1)).innerHTML = "Accessory";
+            let i = 1;
+            Player.Equipped.Armor[key].forEach((item)=>{
+                updateslot(document.getElementById("eq_Acs"+(i)), Data.items.type[item.t][item.i].name, true);
+                i++;
+            });
+            for (; i < 4; i++){
+                updateslot(document.getElementById("eq_Acs"+(i)), "Accessory", false);
             }
         }
         else if (len > 0) {
-            div.innerHTML = Data.items.type[(Player.Equipped.Armor[key].t)][(Player.Equipped.Armor[key].i)].name;
-            div.removeAttribute("style");
+            updateslot(div, Data.items.type[(Player.Equipped.Armor[key].t)][(Player.Equipped.Armor[key].i)].name, true)
         }else{
-            div.innerHTML = key;
-            div.setAttribute("style","color: rgb(161, 161, 161);");
+            updateslot(div, key, false)
         }
     });
 }
@@ -340,26 +333,29 @@ function CreateInventorySlot(Type, SlotId){
 
 function AddInventoryItem(Id, Type, amount, enchant){
     let ItemData = Data.items.type[Type][Id];
-    for (let j = 0; j < Player.Inventory[Type].length; j++) {
-        let item = Player.Inventory[Type][j];
+    let location = Player.Inventory[Type];
+    if (!location){
+        location = [];
+    }
+   if (location.every((item)=>{
         if (item.i === Id){
             item.a = item.a + 1
             item.div.getElementsByClassName("inventory_slot_amount")[0].innerHTML = "x" + item.a;
-            return;
+            return false;
         }
-    }
-    let NewItem = JSON.parse(JSON.stringify({i:ItemData.id,a:amount}));
-    if (!Player.Inventory[Type]){
-        Player.Inventory[Type] = [];
-    }
-    Player.Inventory[Type].push(NewItem);
-    let Slotnum = Player.Inventory[Type].length - 1;
-
-    CreateInventorySlot(Type, Slotnum);
+        return true;
+    })){
+        let NewItem = JSON.parse(JSON.stringify({i:ItemData.id,a:amount}));
+        location.push(NewItem);
+        let Slotnum = location.length - 1;
     
+        CreateInventorySlot(Type, Slotnum);
+    }
 }
 
 function UnEquipItem(slot, location_id){
+    let armor = Player.Equipped.Armor;
+    let tools = Player.Equipped.Tools;
     function removestats(){
         //remove stats
 
@@ -372,18 +368,18 @@ function UnEquipItem(slot, location_id){
     }
     if (slot == "Tool"){
         removestats();
-        AddInventoryItem(Player.Equipped.Tools[location_id].i,Player.Equipped.Tools[location_id].t,1);
-        Player.Equipped.Tools.splice(location_id,1);
+        AddInventoryItem(tools[location_id].i, tools[location_id].t, 1);
+        tools.splice(location_id,1);
     }
     else if(slot == "Accessory"){
         removestats();
-        AddInventoryItem(Player.Equipped.Armor[slot][location_id].i,Player.Equipped.Armor[slot][location_id].t,1);
-        Player.Equipped.Armor[slot].splice(location_id,1);        
+        AddInventoryItem(armor[slot][location_id].i, armor[slot][location_id].t, 1);
+        armor[slot].splice(location_id,1);        
     }
     else{
         removestats();
-        AddInventoryItem(Player.Equipped.Armor[slot].i,Player.Equipped.Armor[slot].t,1);
-        Player.Equipped.Armor[slot] = {};
+        AddInventoryItem(armor[slot].i, armor[slot].t, 1);
+        armor[slot] = {};
     }
     UpdateEquipmentUI();
 }
@@ -392,7 +388,9 @@ function EquipItem(Type,SlotId){
     let Item = Item_Currently_Viewing[0];
     let Item_Data = Data.items.type[Type][Item.i];
     let slot = Item_Data.slot;
-    //need too add unequip current and remove stats
+    let armor = Player.Equipped.Armor;
+    let tools = Player.Equipped.Tools;
+    //need too add stats
     let newitem = JSON.parse(JSON.stringify({i:Item_Data.id,t:Type}));
     function addstats(){
         if (Item_Data.stats){
@@ -412,14 +410,14 @@ function EquipItem(Type,SlotId){
         }
     }
     if (slot == "Tool"){
-        for (let i = 0; i < Player.Equipped.Tools.length; i++) {
-            if (Data.items.type.tool[Player.Equipped.Tools[i].i].class==Item_Data.class){
+        for (let i = 0; i < tools.length; i++) {
+            if (Data.items.type.tool[tools[i].i].class == Item_Data.class){
                 UnEquipItem(slot,i);
                 break;
             }
         }
-        if (Player.Equipped.Tools.length < 10){
-            Player.Equipped.Tools.push(newitem);
+        if (tools.length < 10){
+            tools.push(newitem);
             DeleteInventoryItem(Type,SlotId,1);
             addstats();
         }else{
@@ -427,18 +425,18 @@ function EquipItem(Type,SlotId){
         }
     }
     else if (slot == "Accessory"){
-        if(Player.Equipped.Armor[slot].length > 2){
+        if(armor[slot].length > 2){
             UnEquipItem(slot,0);
         }
-        Player.Equipped.Armor[slot].push(newitem);
+        armor[slot].push(newitem);
         DeleteInventoryItem(Type,SlotId,1);
         addstats();
     }
     else if (slot){
-        if (Player.Equipped.Armor[slot].i !== undefined){//item currently equipped
+        if (armor[slot].i !== undefined){//item currently equipped
             UnEquipItem(slot);
         }
-        Player.Equipped.Armor[slot] = newitem;
+        armor[slot] = newitem;
         DeleteInventoryItem(Type,SlotId,1);
         addstats();
     }
@@ -464,11 +462,12 @@ function SetupInventoryItemInfo(){
             debounce = true;
             let SlotId = getslotid();
             if (SlotId !== null){
-                if(Data.items.type[Item_Currently_Viewing[1]][Item_Currently_Viewing[0].i].usage === "Equip"){
+                let item = Data.items.type[Item_Currently_Viewing[1]][Item_Currently_Viewing[0].i];
+                if(item.usage === "Equip"){
                     EquipItem(Item_Currently_Viewing[1], SlotId);
                 }
                 else{
-                    Data.items.type[Item_Currently_Viewing[1]][Item_Currently_Viewing[0].i].useitem(Player);
+                    item.useitem(Player);
                 }
             }
             else{

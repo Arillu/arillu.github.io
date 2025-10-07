@@ -2,6 +2,12 @@
 
 
 export const items = {
+    usage:{
+        Eat:function(Player){
+            //gain stats
+            //remove 1 item
+        }
+    },
     type:{
         tool:[//all equipable tools go here
             {
@@ -38,6 +44,52 @@ export const items = {
                 action_stats:[["HP",1],["MP",1],["Stam",1]]
             }
         ],
+        accessory:[
+            {
+                id:0,
+                name:"Magic Rock",
+                slot:"Accessory",
+                class:"Artifact",
+                desc:"A Magic Rock",
+                statdesc:"[MP+1]",
+                usage:"Equip",
+                tier: 0,
+                stats:[["MP",1]]
+            },
+            {
+                id:1,
+                name:"Wood Ring",
+                slot:"Accessory",
+                class:"Ring",
+                desc:"A ring craved from wood",
+                statdesc:"[Def+0.01]",
+                usage:"Equip",
+                tier: 0,
+                stats:[["Defense",0.01]]
+            },
+            {
+                id:2,
+                name:"Goblin's Necklace",
+                slot:"Accessory",
+                class:"Necklace",
+                desc:"The enchantment still holds",
+                statdesc:"[Str+1]",
+                usage:"Equip",
+                tier: 0,
+                stats:[["Strength",1]]
+            },
+            {
+                id:3,
+                name:"Swift Feather",
+                slot:"Accessory",
+                class:"Artifact",
+                desc:"The feather seems to make you faster",
+                statdesc:"[Agi+1][Dex+1]",
+                usage:"Equip",
+                tier: 0,
+                stats:[["Agility",1],["Dexterity",1]]
+            }
+        ],
         weapon:[
             {
                 id:0,
@@ -45,7 +97,7 @@ export const items = {
                 slot:"Main Hand",
                 class:"Sword",
                 desc:"A sword made from low quality wood",
-                statdesc:"Strength +1",
+                statdesc:"[Str+1]",
                 usage:"Equip",
                 tier: 0,
                 stats:[["Strength",1]]
@@ -55,7 +107,7 @@ export const items = {
                 name:"Iron Sword",
                 slot:"Main Hand",
                 class:"Sword",
-                desc:"A good quality sword forged from iron",
+                desc:"A quality sword forged from iron",
                 statdesc:"Strength +10",
                 usage:"Equip",
                 tier: 1,
@@ -69,6 +121,7 @@ export const items = {
                 class:"food",
                 tier: 0,
                 usage:"Eat",
+                useitem:(player)=>items.usage.Eat(player),
                 buffs:[["Food",150]],
                 stats:[]
             }

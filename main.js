@@ -1,4 +1,4 @@
-import * as Data from './Data.js?v=21';
+import * as Data from './Data.js?v=22';
 
 
 let Game_Paused = false;
@@ -38,10 +38,13 @@ let Player = {
         }
         UpdateCharacterBars();
     },
+    AddItem:(Id, Type, Amount, enchant)=>AddInventoryItem(Id, Type, Amount, enchant),//Data.items.type[Type][Id]
+    DeleteItem:(Key, Num, Amount, enchant)=>DeleteInventoryItem(Key, Num, Amount, enchant),//Inventory[Key][Num]
     //i= id, a=amount, e=enchant, div=item slot div(delete from save), event=item slot click function(delete from save)
     Inventory:{
         weapon:[{i:0,a:1},{i:1,a:5}],
         tool:[{i:0,a:1},{i:1,a:7},{i:2,a:1}],
+        accessory:[{i:0,a:1},{i:1,a:7},{i:2,a:1},{i:3,a:1}],
         consumable:[{i:0,a:5}]
     },
     Equipped:{//t= type
@@ -54,9 +57,7 @@ let Player = {
             "Feet":{},
             "Hands":{},
             "Legs":{},
-            "Acs1":{},
-            "Acs2":{},
-            "Acs3":{}
+            "Accessory":[]
         },
         Tools:[],//only 1 per type (cant equip two pickaxes)
     }
@@ -146,6 +147,55 @@ function UpdateDialougeUI(){
     for (let i = 0; i < dialouge_options.length; i++) {
         CreateDialougeOption(dialouge_options[i]);
     }
+}
+
+
+function UpdateEquipmentUI(){
+    console.log("update equipment")
+    let j = 1;
+    for (; j < Player.Equipped.Tools.length+1; j++) {
+        let div = document.getElementById("tool" + j)
+        div.innerHTML = Data.items.type[(Player.Equipped.Tools[j-1].t)][(Player.Equipped.Tools[j-1].i)].name;
+        div.removeAttribute("style");
+    }
+    for (; j < 11; j++){
+        let div = document.getElementById("tool" + j)
+        div.innerHTML = "no tool";
+        div.setAttribute("style","color: rgb(161, 161, 161);");
+    }
+    Object.keys(Player.Equipped.Armor).forEach((key)=>{
+        let div = document.getElementById("eq_" + key.replace(" ","_"))
+        let len = Object.keys(Player.Equipped.Armor[key]).length;
+        if (key == "2Hand"){
+            if (len > 0) {
+                //2Hand comes after Mainhand and offhand in the loop
+                let div1 = document.getElementById("eq_Main_Hand");
+                let div2 = document.getElementById("eq_Off_Hand");
+                div1.innerHTML = Data.items.type[(Player.Equipped.Armor[key].t)][(Player.Equipped.Armor[key].i)].name;
+                div1.removeAttribute("style");
+                div2.innerHTML = "-"
+                div2.removeAttribute("style");
+            }
+        }
+        else if (key=="Accessory") {
+            let i = 0;
+            for (; i < Player.Equipped.Armor[key].length; i++){
+                document.getElementById("eq_Acs"+(i+1)).removeAttribute("style");
+                document.getElementById("eq_Acs"+(i+1)).innerHTML = Data.items.type[(Player.Equipped.Armor[key][i].t)][(Player.Equipped.Armor[key][i].i)].name;
+            }
+            for (; i < 3; i++){
+                document.getElementById("eq_Acs"+(i+1)).setAttribute("style","color: rgb(161, 161, 161);");
+                document.getElementById("eq_Acs"+(i+1)).innerHTML = "Accessory";
+            }
+        }
+        else if (len > 0) {
+            div.innerHTML = Data.items.type[(Player.Equipped.Armor[key].t)][(Player.Equipped.Armor[key].i)].name;
+            div.removeAttribute("style");
+        }else{
+            div.innerHTML = key;
+            div.setAttribute("style","color: rgb(161, 161, 161);");
+        }
+    });
 }
 
 
@@ -308,7 +358,8 @@ function AddInventoryItem(Id, Type, amount, enchant){
     CreateInventorySlot(Type, Slotnum);
     
 }
-function UnEquipItem(slot, tool_location_id){
+
+function UnEquipItem(slot, location_id){
     function removestats(){
         //remove stats
 
@@ -321,15 +372,22 @@ function UnEquipItem(slot, tool_location_id){
     }
     if (slot == "Tool"){
         removestats();
-        AddInventoryItem(Player.Equipped.Tools[tool_location_id].i,Player.Equipped.Tools[tool_location_id].t,1);
-        Player.Equipped.Tools.splice(tool_location_id,1);
+        AddInventoryItem(Player.Equipped.Tools[location_id].i,Player.Equipped.Tools[location_id].t,1);
+        Player.Equipped.Tools.splice(location_id,1);
+    }
+    else if(slot == "Accessory"){
+        removestats();
+        AddInventoryItem(Player.Equipped.Armor[slot][location_id].i,Player.Equipped.Armor[slot][location_id].t,1);
+        Player.Equipped.Armor[slot].splice(location_id,1);        
     }
     else{
         removestats();
         AddInventoryItem(Player.Equipped.Armor[slot].i,Player.Equipped.Armor[slot].t,1);
         Player.Equipped.Armor[slot] = {};
     }
+    UpdateEquipmentUI();
 }
+
 function EquipItem(Type,SlotId){
     let Item = Item_Currently_Viewing[0];
     let Item_Data = Data.items.type[Type][Item.i];
@@ -368,6 +426,14 @@ function EquipItem(Type,SlotId){
             console.log("too many tools equipped")
         }
     }
+    else if (slot == "Accessory"){
+        if(Player.Equipped.Armor[slot].length > 2){
+            UnEquipItem(slot,0);
+        }
+        Player.Equipped.Armor[slot].push(newitem);
+        DeleteInventoryItem(Type,SlotId,1);
+        addstats();
+    }
     else if (slot){
         if (Player.Equipped.Armor[slot].i !== undefined){//item currently equipped
             UnEquipItem(slot);
@@ -379,7 +445,7 @@ function EquipItem(Type,SlotId){
     else{
         console.log("cant equip this item")
     }
-    
+    UpdateEquipmentUI();
 }
 
 function SetupInventoryItemInfo(){
@@ -402,7 +468,7 @@ function SetupInventoryItemInfo(){
                     EquipItem(Item_Currently_Viewing[1], SlotId);
                 }
                 else{
-                    //consume item
+                    Data.items.type[Item_Currently_Viewing[1]][Item_Currently_Viewing[0].i].useitem(Player);
                 }
             }
             else{
@@ -435,6 +501,38 @@ function SetupInventoryItemInfo(){
     });
 }
 
+function SetupCharacterEquipmentButtons(){
+    let debounce = false;
+    for (let i=1; i < 11; i++){
+        document.getElementById("tool" + i).addEventListener("click", function(){
+            if ((!debounce) && (Player.Equipped.Tools.length >= i)){
+                debounce = true;
+                UnEquipItem("Tool",(i-1));
+                debounce = false;
+            }
+        });
+    }
+    Object.keys(Player.Equipped.Armor).forEach((key)=>{
+        if ((key !== "2Hand")&& (key !== "Accessory")){
+            document.getElementById("eq_" + key.replace(" ","_")).addEventListener("click", function(){
+                if ((!debounce) && (Object.keys(Player.Equipped.Armor[key]).length > 0)){
+                    debounce = true;
+                    UnEquipItem(key);
+                    debounce = false;
+                }
+            });
+        }
+    });
+    for (let i=1; i < 4; i++){
+        document.getElementById("eq_Acs" + i).addEventListener("click", function(){
+            if ((!debounce) && (Player.Equipped.Armor.Accessory.length >= i)){
+                debounce = true;
+                UnEquipItem("Accessory",(i-1));
+                debounce = false;
+            }
+        });
+    }
+}
 let TimeSinceSaved = 0;
 
 function Save_Game() {
@@ -443,9 +541,10 @@ function Save_Game() {
         "CharacterStats":Player.Stats,
         "Current_Location":Current_Location,
         "Current_Action":Current_Action,
-        "Inventory":TrimInventoryData()
+        "Inventory":TrimInventoryData(),
+        "Equipped":Player.Equipped
     }
-    localStorage.setItem("test_data", JSON.stringify(savedata));
+    localStorage.setItem("test_data2", JSON.stringify(savedata));
     console.log("Game Saved");
     return 0; //used to set TimeSinceSaved
 }
@@ -462,7 +561,7 @@ async function Game_Loop() {
 
 
 function Load_Game() {
-    let retrive_data = localStorage.getItem("test_data");
+    let retrive_data = localStorage.getItem("test_data2");
     if (retrive_data) {
         retrive_data = JSON.parse(retrive_data);
 
@@ -471,7 +570,8 @@ function Load_Game() {
         Player.Stats = retrive_data.CharacterStats;
         Current_Action = retrive_data.Current_Action;
         Current_Location = retrive_data.Current_Location;
-        Player.Inventory = retrive_data.Inventory
+        Player.Inventory = retrive_data.Inventory;
+        Player.Equipped = retrive_data.Equipped;
     }
     Object.keys(Player.Inventory).forEach((Item_Type)=>{
         Player.Inventory[Item_Type].forEach((a, SlotId)=>{
@@ -485,6 +585,8 @@ function Load_Game() {
     UpdateActionUI();
     UpdateDialougeUI();
     SetupInventoryItemInfo();
+    SetupCharacterEquipmentButtons()
+    UpdateEquipmentUI();
     Game_Loop();
 }
 window.addEventListener('load', Load_Game, {once:true})

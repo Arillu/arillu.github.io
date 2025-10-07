@@ -8,9 +8,9 @@ function statholder(show) {
     let hide =  Object.assign([], char_buttons);
     hide.splice(hide.indexOf(show),1);
 
-    for (let i = 0; i < hide.length; i++) {
-        document.getElementById("char_" + hide[i]).setAttribute("hidden",'');
-    }
+    hide.forEach((name)=>{
+        document.getElementById("char_" + name).setAttribute("hidden",'');
+    });
 
     document.getElementById("char_" + show).removeAttribute("hidden");
 }
@@ -20,9 +20,9 @@ function actionmenu(show) {
     let hide =  Object.assign([], action_buttons);
     hide.splice(hide.indexOf(show),1);
 
-    for (let i = 0; i < hide.length; i++) {
-        document.getElementById(hide[i] + "_list_holder").setAttribute("hidden",'');
-    }
+    hide.forEach((name)=>{
+        document.getElementById(name + "_list_holder").setAttribute("hidden",'');
+    });
 
     document.getElementById(show + "_list_holder").removeAttribute("hidden");
 
@@ -30,12 +30,12 @@ function actionmenu(show) {
 
 
 function EnableButtons() {
-    for (let i = 0; i < char_buttons.length; i++) {
-        document.getElementById("character_button_" + char_buttons[i]).addEventListener("click", () => statholder(char_buttons[i]));
-    }
-    for (let i = 0; i < action_buttons.length; i++) {
-        document.getElementById(action_buttons[i] + "_list_button").addEventListener("click", () => actionmenu(action_buttons[i]));
-    }
+    char_buttons.forEach((name)=>{
+        document.getElementById("character_button_" + name).addEventListener("click", () => statholder(name));
+    });
+    action_buttons.forEach((name)=>{
+        document.getElementById(name + "_list_button").addEventListener("click", () => actionmenu(name));
+    });
 }
 
 window.addEventListener('load', EnableButtons, {once:true});

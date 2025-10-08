@@ -54,7 +54,7 @@ export const items = {
                 statdesc:"[MP+1]",
                 usage:"Equip",
                 tier: 0,
-                stats:[["MP",1]]
+                stats:[["MP_Max",1]]
             },
             {
                 id:1,
@@ -108,7 +108,7 @@ export const items = {
                 slot:"Main Hand",
                 class:"Sword",
                 desc:"A quality sword forged from iron",
-                statdesc:"Strength +10",
+                statdesc:"[Str+10]",
                 usage:"Equip",
                 tier: 1,
                 stats:[["Strength",10]]

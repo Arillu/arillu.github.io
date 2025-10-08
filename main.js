@@ -13,6 +13,8 @@ let Item_Currently_Viewing = null;
 let Player = {
     "Stats":{"Strength":1,"Endurance":1,"Agility":1,"Defense":1,"Intelligence":1,"Wisdom":1,"Dexterity":1,"Resistance":1,"HP":5,"HP_Max":10,"MP":5,"MP_Max":10,"Stam":5,"Stam_Max":10,"Exp":0,"Level":0},
     
+    TotalStats:GetTotalStats,
+
     get Current_Action(){ 
         return Current_Action;
     },
@@ -71,17 +73,50 @@ function UpdateTime(){
     document.getElementById("current_date_time").innerHTML = new_date;
 }
 
+function GetTotalStats(){//add buffs here later
+    let armor = Player.Equipped.Armor;
+    let total_stats;
+    try {
+        total_stats = structuredClone(Player.Stats);
+    }catch(error){
+        total_stats = JSON.parse(JSON.stringify(Player.Stats));
+    }
+
+    function addstats(item){
+        let item_stats = Data.items.type[item.t][item.i].stats;
+        item_stats.forEach((stat)=>{ //itemstat= [[HP_Max,1],[Strength,1]]
+            total_stats[stat[0]] = total_stats[stat[0]] + stat[1];
+        });
+        if (item.e){
+
+        }
+    }
+    Object.keys(armor).slice(0,8).forEach((key)=>{
+        let item = armor[key];
+        if (item.i !== undefined){
+            addstats(item);
+        }
+    });
+    armor.Accessory.forEach((item)=>{
+        addstats(item);
+    });
+    
+    return total_stats;
+}
+
 function UpdateStats(){
-    document.getElementById("stat_str").innerHTML = "Strength: " + Player.Stats.Strength;
-    document.getElementById("stat_end").innerHTML = "Endurance: " + Player.Stats.Endurance;
-    document.getElementById("stat_agi").innerHTML = "Agility: " + Player.Stats.Agility;
-    document.getElementById("stat_def").innerHTML = "Defense: " + Player.Stats.Defense;
-    document.getElementById("stat_int").innerHTML = "Intelligence: " + Player.Stats.Intelligence;
-    document.getElementById("stat_wis").innerHTML = "Wisdom: " + Player.Stats.Wisdom;
-    document.getElementById("stat_dex").innerHTML = "Dexterity: " + Player.Stats.Dexterity;
-    document.getElementById("stat_res").innerHTML = "Resistance: " + Player.Stats.Resistance;
+    let stats = GetTotalStats();
+    document.getElementById("stat_str").innerHTML = "Strength: " + stats.Strength;
+    document.getElementById("stat_end").innerHTML = "Endurance: " + stats.Endurance;
+    document.getElementById("stat_agi").innerHTML = "Agility: " + stats.Agility;
+    document.getElementById("stat_def").innerHTML = "Defense: " + stats.Defense;
+    document.getElementById("stat_int").innerHTML = "Intelligence: " + stats.Intelligence;
+    document.getElementById("stat_wis").innerHTML = "Wisdom: " + stats.Wisdom;
+    document.getElementById("stat_dex").innerHTML = "Dexterity: " + stats.Dexterity;
+    document.getElementById("stat_res").innerHTML = "Resistance: " + stats.Resistance;
 }
 function UpdateCharacterBars(){
+    let stats = GetTotalStats();
     function Trim(number){
         return ((number*100).toString().substring(0, 5)+"%");
     }
@@ -89,14 +124,14 @@ function UpdateCharacterBars(){
     document.getElementById("char_exp").innerHTML = (Player.Stats.Exp + "/" + LevelExpReq[Player.Stats.Level]);
     document.getElementById("exp_bar").style.setProperty('width', Trim(Player.Stats.Exp/LevelExpReq[Player.Stats.Level]));
 
-    document.getElementById("char_hp").innerHTML = (Player.Stats.HP + "/" + Player.Stats.HP_Max);
-    document.getElementById("hp_bar").style.setProperty('width', Trim(Player.Stats.HP/Player.Stats.HP_Max));
+    document.getElementById("char_hp").innerHTML = (Player.Stats.HP + "/" + stats.HP_Max);
+    document.getElementById("hp_bar").style.setProperty('width', Trim(Player.Stats.HP/stats.HP_Max));
 
-    document.getElementById("char_stamina").innerHTML = (Player.Stats.Stam + "/" + Player.Stats.Stam_Max);
-    document.getElementById("stamina_bar").style.setProperty('width', Trim(Player.Stats.Stam/Player.Stats.Stam_Max));
+    document.getElementById("char_stamina").innerHTML = (Player.Stats.Stam + "/" + stats.Stam_Max);
+    document.getElementById("stamina_bar").style.setProperty('width', Trim(Player.Stats.Stam/stats.Stam_Max));
 
-    document.getElementById("char_mp").innerHTML = (Player.Stats.MP + "/" + Player.Stats.MP_Max);
-    document.getElementById("mana_bar").style.setProperty('width', Trim(Player.Stats.MP/Player.Stats.MP_Max));
+    document.getElementById("char_mp").innerHTML = (Player.Stats.MP + "/" + stats.MP_Max);
+    document.getElementById("mana_bar").style.setProperty('width', Trim(Player.Stats.MP/stats.MP_Max));
 
     return;
 }
@@ -189,6 +224,8 @@ function UpdateEquipmentUI(){
             updateslot(div, key, false)
         }
     });
+    UpdateStats();
+    UpdateCharacterBars();
 }
 
 
@@ -356,28 +393,15 @@ function AddInventoryItem(Id, Type, amount, enchant){
 function UnEquipItem(slot, location_id){
     let armor = Player.Equipped.Armor;
     let tools = Player.Equipped.Tools;
-    function removestats(){
-        //remove stats
-
-
-
-
-
-
-
-    }
     if (slot == "Tool"){
-        removestats();
         AddInventoryItem(tools[location_id].i, tools[location_id].t, 1);
         tools.splice(location_id,1);
     }
     else if(slot == "Accessory"){
-        removestats();
         AddInventoryItem(armor[slot][location_id].i, armor[slot][location_id].t, 1);
         armor[slot].splice(location_id,1);        
     }
     else{
-        removestats();
         AddInventoryItem(armor[slot].i, armor[slot].t, 1);
         armor[slot] = {};
     }
@@ -392,23 +416,6 @@ function EquipItem(Type,SlotId){
     let tools = Player.Equipped.Tools;
     //need too add stats
     let newitem = JSON.parse(JSON.stringify({i:Item_Data.id,t:Type}));
-    function addstats(){
-        if (Item_Data.stats){
-            //add stats
-
-
-
-
-
-
-
-
-
-
-
-
-        }
-    }
     if (slot == "Tool"){
         tools.every((item, location)=>{
             if (Data.items.type.tool[item.i].class == Item_Data.class){
@@ -420,7 +427,6 @@ function EquipItem(Type,SlotId){
         if (tools.length < 10){
             tools.push(newitem);
             DeleteInventoryItem(Type,SlotId,1);
-            addstats();
         }else{
             console.log("too many tools equipped")
         }
@@ -431,7 +437,6 @@ function EquipItem(Type,SlotId){
         }
         armor[slot].push(newitem);
         DeleteInventoryItem(Type,SlotId,1);
-        addstats();
     }
     else if (slot){
         if (armor[slot].i !== undefined){//item currently equipped
@@ -439,7 +444,6 @@ function EquipItem(Type,SlotId){
         }
         armor[slot] = newitem;
         DeleteInventoryItem(Type,SlotId,1);
-        addstats();
     }
     else{
         console.log("cant equip this item")
@@ -450,13 +454,16 @@ function EquipItem(Type,SlotId){
 function SetupInventoryItemInfo(){
     let debounce = false;
     function getslotid(){
+        let slot = null;
         let inv = Player.Inventory[Item_Currently_Viewing[1]]
-        inv.forEach((item, slotnum)=>{
+        inv.every((item, slotnum)=>{
             if (item === Item_Currently_Viewing[0]){
-                return slotnum;
+                slot = slotnum;
+                return false;
             }
+            return true;
         });
-        return null
+        return slot;
     }
     document.getElementById("item_info_use").addEventListener("click", function(){
         if (!debounce){
@@ -472,7 +479,7 @@ function SetupInventoryItemInfo(){
                 }
             }
             else{
-                console.log("failed to equip/eat item");
+                console.log("failed to equip/use item");
             }          
 
             debounce = false;

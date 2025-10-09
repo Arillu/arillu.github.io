@@ -25,8 +25,11 @@ let Player = {
             let msg = "You stopped " + Data.actions[Current_Action].msg
             SendGameMessage(msg)
         }
+        let old_div = document.getElementById("action-" + Current_Action);
+        if (old_div){
+            old_div.removeAttribute("style");
+        }
         Current_Action = value;
-
     },
 
     get Current_Location(){ 
@@ -34,10 +37,6 @@ let Player = {
     },
     set Current_Location(value){
         Current_Location = value;
-        let div_list = Array.from(document.getElementsByClassName("action_menu_list_item"));
-        div_list.forEach((div)=>{
-            div.removeAttribute("style");
-        });
         UpdateActionUI();
         UpdateDialougeUI();
     },
@@ -579,7 +578,7 @@ function SetupCharacterEquipmentButtons(){
 }
 
 function CreateActionSlot(action){ 
-//used when loading game or new action unlocked(hidden by def. then update action ui)
+//used when loading game or new action unlocked(div hidden by default, call UpdateActionUI if a new skill is added)
     let div = document.createElement("div");
     div.setAttribute("class", "action_menu_list_item");
     div.setAttribute("hidden","");
@@ -587,17 +586,21 @@ function CreateActionSlot(action){
     document.getElementById("action_list").append(div);
     div.setAttribute("id","action-" + action);
 
-    if (action !== Player.Current_Action){
+    if (action == Player.Current_Action){
         div.setAttribute("style", "background-color: rgba(11, 169, 197, 0.5);");
     }
-    
+    let debounce = false;
     div.addEventListener('click', function(){
-        if (action === Player.Current_Action){
-            Player.Current_Action = "nothing";
-            div.removeAttribute("style");
-        }else{
-            Player.Current_Action = action;
-            div.setAttribute("style", "background-color: rgba(11, 169, 197, 0.5);");
+        if (!debounce){
+            debounce = true;
+            if (action === Player.Current_Action){
+                Player.Current_Action = "nothing";
+                div.removeAttribute("style");
+            }else{
+                Player.Current_Action = action;
+                div.setAttribute("style", "background-color: rgba(11, 169, 197, 0.5);");
+            }
+            debounce = false;
         }
     })
 }

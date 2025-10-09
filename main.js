@@ -22,7 +22,7 @@ let Player = {
     },
     set Current_Action(value){
         if (Current_Action !== "nothing"){
-            let msg = "You stopped " + Data.actions[Current_Action].msg
+            let msg = "You <span style='color: red;'>stopped</span> " + Data.actions[Current_Action].msg;
             SendGameMessage(msg)
         }
         let old_div = document.getElementById("action-" + Current_Action);
@@ -30,6 +30,10 @@ let Player = {
             old_div.removeAttribute("style");
         }
         Current_Action = value;
+        if (Current_Action !== "nothing"){
+            let msg = "You <span style='color: green;'>started</span> " + Data.actions[Current_Action].msg;
+            SendGameMessage(msg);
+        }
     },
 
     get Current_Location(){ 
@@ -77,7 +81,15 @@ let Player = {
 
 
 function SendGameMessage(msg,type){
-
+    let new_div = document.createElement("p");
+    let game_log = document.getElementById("game_log");
+    new_div.setAttribute("class","game_log_msg")
+    new_div.innerHTML = msg;
+    if (game_log.children.length >= 50){
+        game_log.removeChild(game_log.firstElementChild);
+    }
+    game_log.appendChild(new_div);
+    game_log.scrollTop = game_log.scrollHeight;
 }
 
 function UpdateTime(){

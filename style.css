@@ -617,3 +617,20 @@ body {
     height: 30px;
     background: linear-gradient(90deg,rgb(8, 145, 37),rgb(57, 167, 75));
 }
+
+.game_log_msg{
+    position: relative;
+    width: 344px;
+    left: 3px;
+    text-align: center;
+    line-height: 24px;
+    margin: 0px;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    border-bottom-color: white;
+}
+#game_log{
+    overflow-y: scroll;
+    overflow-x: hidden;
+    scrollbar-width: none;
+}

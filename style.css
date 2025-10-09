@@ -185,6 +185,7 @@ body {
     height: 26px;
     line-height: 26px;
     text-wrap: nowrap;
+    user-select: none;
 }
 #character_button_holder {
     z-index: 4;
@@ -202,6 +203,7 @@ body {
     line-height: 26px;
     text-wrap: nowrap;
     text-align: center;
+    user-select: none;
 }
 #character_button_stats{
     position: relative;
@@ -381,6 +383,7 @@ body {
     border-bottom-style: dashed;
     border-bottom-color: white;
     border-bottom-width: 1px;
+    user-select: none;
 }
 .game_dialouge_option:hover {
   background-color: rgba(11, 169, 197, 0.5); 
@@ -416,6 +419,7 @@ body {
     padding-left: 6px;
     border-bottom: 1px dotted #ffffff;
     box-sizing: border-box;
+    user-select: none;
 }
 .inventory_slot:hover {
   background-color: #0d477e;
@@ -542,6 +546,7 @@ body {
     text-align: center;
     text-wrap: none;
     background-color: rgba(126, 126, 126);
+    user-select: none;
 }
 .action_bottom_bar_item:hover {
   background-color: #04AA6D;
@@ -570,7 +575,14 @@ body {
     border-bottom-style: dashed;
     border-bottom-width: 1px;
     border-bottom-color: white;
+    text-align: center;
+    line-height: 30px;
+    user-select: none;
 }
+.action_menu_list_item:hover{
+  background-color: rgba(11, 169, 197, 0.5);
+}
+
 .skill_name_label{
     position: relative;
     float: left;
@@ -604,13 +616,4 @@ body {
     width: 207px;
     height: 30px;
     background: linear-gradient(90deg,rgb(8, 145, 37),rgb(57, 167, 75));
-}
-.action_name_label{
-    position: relative;
-    float: left;
-    left: 10px;
-    width: 614px;
-    height: 30px;
-    text-align: center;
-    line-height: 30px;
 }

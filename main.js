@@ -6,19 +6,25 @@ let Game_Paused = false;
 const LevelExpReq = [100,400,1600]
 
 let GameDate = {"Year":1000,"Month":4,"Day":15,"Hour":7,"Minute":30}
-let Current_Location = "spawn_starting_building";
+let Current_Location = {area:"spawn", location:"start"};
 let Current_Action = "nothing"
 let Item_Currently_Viewing = null;
 
 let Player = {
     "Stats":{"Strength":1,"Endurance":1,"Agility":1,"Defense":1,"Intelligence":1,"Wisdom":1,"Dexterity":1,"Resistance":1,"HP":5,"HP_Max":10,"MP":5,"MP_Max":10,"Stam":5,"Stam_Max":10,"Exp":0,"Level":0},
     
+    unlocked_actions:["run","rest"], //list of action names(from data.actions)
+
     TotalStats:GetTotalStats,
 
     get Current_Action(){ 
         return Current_Action;
     },
     set Current_Action(value){
+        if (Current_Action !== "nothing"){
+            let msg = "You stopped " + Data.actions[Current_Action].msg
+            SendGameMessage(msg)
+        }
         Current_Action = value;
 
     },
@@ -28,7 +34,11 @@ let Player = {
     },
     set Current_Location(value){
         Current_Location = value;
-
+        let div_list = Array.from(document.getElementsByClassName("action_menu_list_item"));
+        div_list.forEach((div)=>{
+            div.removeAttribute("style");
+        });
+        UpdateActionUI();
         UpdateDialougeUI();
     },
     Restore_Resource:function(resource_list){
@@ -66,6 +76,10 @@ let Player = {
 }
 
 
+
+function SendGameMessage(msg,type){
+
+}
 
 function UpdateTime(){
     const string_minutes = (GameDate.Minute < 10) ? "0" + GameDate.Minute : GameDate.Minute
@@ -139,7 +153,22 @@ function UpdateCharacterBars(){
 
 
 function UpdateActionUI(){
-
+    let disabled_action_id = Data.locations.area[Current_Location.area][Current_Location.location].disabled_actions;
+    let div_list = Array.from(document.getElementsByClassName("action_menu_list_item"));
+    if (disabled_action_id == "all"){
+        div_list.forEach((div)=>{
+            div.setAttribute("hidden","");
+        });
+    }
+    else{
+        let disabled_actions = Data.locations.disabled_action_list[disabled_action_id];
+        div_list.forEach((div)=>{
+                div.removeAttribute("hidden");
+                if (disabled_actions.includes(div.getAttribute("id").split("-")[1])){
+                    div.setAttribute("hidden","");
+                }
+        });
+    }
 }
 
 
@@ -154,13 +183,21 @@ function UpdateDialougeUI(){
     current_dialouge_options = [];
     
     //create new options
-    let current_location = Data.locations.Areas[Player.Current_Location];
+    let current_location;
+    try{
+        current_location = Data.locations.area[Player.Current_Location.area][Player.Current_Location.location];
+    }catch{
+        console.warn("Location invalid moved to spawn")
+        current_location = Data.locations.area.spawn.start;
+        Current_Location = {area:"spawn", location:"start"};
+    }
+
+
     let dialouge_options = current_location.get_unlocked_options();
     function CreateDialougeOption(option_data){
         let option = document.createElement("div");
         option.innerHTML = option_data.text;
         option.setAttribute("class", "game_dialouge_option");
-        option.setAttribute("id", "dialouge-" + Player.Current_Location + "-" + option_data.id);
         Option_Holder.appendChild(option);
 
         let eventfunction = function(){
@@ -382,7 +419,7 @@ function AddInventoryItem(Id, Type, amount, enchant){
         }
         return true;
     })){
-        let NewItem = JSON.parse(JSON.stringify({i:ItemData.id,a:amount}));
+        let NewItem = {i:ItemData.id,a:amount};
         location.push(NewItem);
         let Slotnum = location.length - 1;
     
@@ -540,6 +577,31 @@ function SetupCharacterEquipmentButtons(){
         });
     }
 }
+
+function CreateActionSlot(action){ 
+//used when loading game or new action unlocked(hidden by def. then update action ui)
+    let div = document.createElement("div");
+    div.setAttribute("class", "action_menu_list_item");
+    div.setAttribute("hidden","");
+    div.innerHTML = Data.actions[action].label;
+    document.getElementById("action_list").append(div);
+    div.setAttribute("id","action-" + action);
+
+    if (action !== Player.Current_Action){
+        div.setAttribute("style", "background-color: rgba(11, 169, 197, 0.5);");
+    }
+    
+    div.addEventListener('click', function(){
+        if (action === Player.Current_Action){
+            Player.Current_Action = "nothing";
+            div.removeAttribute("style");
+        }else{
+            Player.Current_Action = action;
+            div.setAttribute("style", "background-color: rgba(11, 169, 197, 0.5);");
+        }
+    })
+}
+
 let TimeSinceSaved = 0;
 
 function Save_Game() {
@@ -549,7 +611,8 @@ function Save_Game() {
         "Current_Location":Current_Location,
         "Current_Action":Current_Action,
         "Inventory":TrimInventoryData(),
-        "Equipped":Player.Equipped
+        "Equipped":Player.Equipped,
+        "unlocked_actions":Player.unlocked_actions
     }
     localStorage.setItem("test_data2", JSON.stringify(savedata));
     console.log("Game Saved");
@@ -560,7 +623,7 @@ function Save_Game() {
 async function Game_Loop() {
     while (!Game_Paused){
         Increase_Time_Date(1);
-        Data.actions[Player.Current_Action](Player);
+        Data.actions[Player.Current_Action].do(Player);
         TimeSinceSaved = TimeSinceSaved >= 20 ? Save_Game() : TimeSinceSaved+1;
         await new Promise(resolve => setTimeout(resolve, 1000));
     }
@@ -571,20 +634,22 @@ function Load_Game() {
     let retrive_data = localStorage.getItem("test_data2");
     if (retrive_data) {
         retrive_data = JSON.parse(retrive_data);
-
         GameDate = retrive_data.GameDate;
-
         Player.Stats = retrive_data.CharacterStats;
         Current_Action = retrive_data.Current_Action;
         Current_Location = retrive_data.Current_Location;
         Player.Inventory = retrive_data.Inventory;
         Player.Equipped = retrive_data.Equipped;
+        Player.unlocked_actions = retrive_data.unlocked_actions;
     }
     Object.keys(Player.Inventory).forEach((Item_Type)=>{
         Player.Inventory[Item_Type].forEach((a, SlotId)=>{
             CreateInventorySlot(Item_Type, SlotId);
         });
     })
+    Player.unlocked_actions.forEach((action)=>{
+        CreateActionSlot(action);
+    });
 
     UpdateTime();
     UpdateStats();

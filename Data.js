@@ -130,19 +130,42 @@ export const items = {
 
 }
 export const actions = {
-    nothing:function(player){
+    nothing:{
+        label:"",
+        msg:"nothing",
+        do:function(player){
         //do nothing
+        }
     },
-    sleep:function(player,a){//sleep from location menu
-        let location_name = player.Current_Location;
-        let action_info = locations.Areas[location_name].actions.sleep.item;
-        player.Restore_Resource(action_info.action_stats);
-    },
-    rest:function(player){//sleep from action menu
+    combat:{
+        label:"",
+        msg:"fighting",
+        do:function(player){
 
+        }
     },
-    run:function(player){
+    sleep:{
+        label:"",
+        msg:"sleeping",
+        do:function(player){//sleep from location menu
+            let location = player.Current_Location;
+            let action_info = locations.area[location.area][location.location].actions.sleep.item;
+            player.Restore_Resource(action_info.action_stats);
+        }
+    },
+    rest:{
+        label:"Rest",
+        msg:"resting",
+        do:function(player){//sleep from action menu
 
+        }
+    },
+    run:{
+        label:"Run",
+        msg:"running",
+        do:function(player){
+
+        }
     }
 
 }
@@ -159,56 +182,66 @@ export const locations = {
     OpenShop:function(){
 
     },
-    Areas:{
-        "spawn_starting_building":{
-            top_text:"Unknown: Oh! you finally woke up.",
-            get_unlocked_options:function(){
-                //use later for locked options
-                return this.options
-            },
-            options:[
-                {
-                    text:'<span style="color: red;">[Area]</span> Leave the building',
-                    id:0,
-                    click:(player) => locations.MoveTo(player,"spawn_outdoors")
+    disabled_action_list:{
+        building:["run"],
+        outside:[]
+    },
+    area:{
+        "spawn":{
+            location:{x:0,y:0},//for travel time between areas
+            "start":{
+                top_text:"Unknown: Oh! you finally woke up.",
+                get_unlocked_options:function(){
+                    //use later for locked options
+                    return this.options
                 },
-                {
-                    text:'<span style="color: green;">[Action]</span> Rest',
-                    id:1,
-                    click:(player) => locations.MoveTo(player,"spawn_starting_building_bed", "sleep")
-                }
+                disabled_actions:"building",
+                options:[
+                    {
+                        text:'<span style="color: red;">[Area]</span> Leave the building',
+                        id:0,
+                        click:(player) => locations.MoveTo(player,{area:"spawn",location:"outdoors"})
+                    },
+                    {
+                        text:'<span style="color: green;">[Action]</span> Rest',
+                        id:1,
+                        click:(player) => locations.MoveTo(player,{area:"spawn",location:"starting_building_bed"}, "sleep")
+                    }
 
-            ]
-        },
-        "spawn_starting_building_bed":{
-            top_text:"You are Resting",
-            get_unlocked_options:function(){
-                return this.options
+                ]
             },
-            actions:{
-                sleep:{item:items.type.tool[2]}
-            },
-            options:[
-                {
-                    text:'<span style="color: green;">[Action]</span> Get up',
-                    id:0,
-                    click:(player) => locations.MoveTo(player,"spawn_starting_building")
-                }
+            "starting_building_bed":{
+                top_text:"You are Resting",
+                get_unlocked_options:function(){
+                    return this.options
+                },
+                actions:{
+                    sleep:{item:items.type.tool[2]}
+                },
+                disabled_actions:"all",
+                options:[
+                    {
+                        text:'<span style="color: green;">[Action]</span> Get up',
+                        id:0,
+                        click:(player) => locations.MoveTo(player,{area:"spawn",location:"start"})
+                    }
 
-            ]
-        },
-        "spawn_outdoors":{
-            top_text:"You can see a large mountain, there are a few buildings, and a large wall connecting to the mountain",
-            get_unlocked_options:function(){
-                return this.options
+                ]
             },
-            options:[
-                {
-                    text:'<span style="color: red;">[Area]</span> Enter the building',
-                    id:0,
-                    click:(player) => locations.MoveTo(player,"spawn_starting_building")
-                }
-            ]            
+            "outdoors":{
+                top_text:"You can see a large mountain, there are a few buildings, and a large wall connecting to the mountain",
+                get_unlocked_options:function(){
+                    return this.options
+                },
+                disabled_actions:"outside",
+                options:[
+                    {
+                        text:'<span style="color: red;">[Area]</span> Enter the building',
+                        id:0,
+                        click:(player) => locations.MoveTo(player,{area:"spawn",location:"start"})
+                    }
+                ]            
+            }
         }
     }
 }

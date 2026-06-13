@@ -359,7 +359,8 @@ body {
 
 #game_dialouge_spoken{
     height: 100px;
-    width: 624px;
+    width: 620px;
+    left: 2px;
     text-align: center;
     font-size: 18px;
     line-height: 32px;

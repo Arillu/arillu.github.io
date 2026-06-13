@@ -11,7 +11,7 @@ let Current_Action = "nothing"
 let Item_Currently_Viewing = null;
 
 let Player = {
-    "Stats":{"Strength":1,"Endurance":1,"Agility":1,"Defense":1,"Intelligence":1,"Wisdom":1,"Dexterity":1,"Resistance":1,"HP":5,"HP_Max":10,"MP":5,"MP_Max":10,"Stam":5,"Stam_Max":10,"Exp":0,"Level":0},
+    "Stats":{"Strength":1,"Endurance":1,"Agility":1,"Defense":1,"Intelligence":1,"Wisdom":1,"Perception":1,"Resistance":1,"HP":5,"HP_Max":10,"MP":5,"MP_Max":10,"Stam":5,"Stam_Max":10,"Exp":0,"Level":0},
     
     unlocked_actions:["run","rest"], //list of action names(from data.actions)
 
@@ -137,7 +137,7 @@ function UpdateStats(){
     document.getElementById("stat_def").innerHTML = "Defense: " + stats.Defense;
     document.getElementById("stat_int").innerHTML = "Intelligence: " + stats.Intelligence;
     document.getElementById("stat_wis").innerHTML = "Wisdom: " + stats.Wisdom;
-    document.getElementById("stat_dex").innerHTML = "Dexterity: " + stats.Dexterity;
+    document.getElementById("stat_per").innerHTML = "Perception: " + stats.Perception;
     document.getElementById("stat_res").innerHTML = "Resistance: " + stats.Resistance;
 }
 function UpdateCharacterBars(){
@@ -164,18 +164,17 @@ function UpdateCharacterBars(){
 
 
 function UpdateActionUI(){
-    let disabled_action_id = Data.locations.area[Current_Location.area][Current_Location.location].disabled_actions;
+    let disabled_actions_list = Data.locations.area[Current_Location.area][Current_Location.location].disabled_actions;
     let div_list = Array.from(document.getElementsByClassName("action_menu_list_item"));
-    if (disabled_action_id == "all"){
+    if (disabled_actions_list == "all"){
         div_list.forEach((div)=>{
             div.setAttribute("hidden","");
         });
     }
     else{
-        let disabled_actions = Data.locations.disabled_action_list[disabled_action_id];
         div_list.forEach((div)=>{
                 div.removeAttribute("hidden");
-                if (disabled_actions.includes(div.getAttribute("id").split("-")[1])){
+                if (disabled_actions_list.includes(div.getAttribute("id").split("-")[1])){
                     div.setAttribute("hidden","");
                 }
         });
@@ -463,7 +462,13 @@ function EquipItem(Type,SlotId){
     let armor = Player.Equipped.Armor;
     let tools = Player.Equipped.Tools;
     //need too add stats
-    let newitem = JSON.parse(JSON.stringify({i:Item_Data.id,t:Type}));
+    let newitem;
+    try {
+        newitem = structuredClone({i:Item_Data.id,t:Type});
+    }catch(error){
+        newitem = JSON.parse(JSON.stringify({i:Item_Data.id,t:Type}));
+    }
+
     if (slot == "Tool"){
         tools.every((item, location)=>{
             if (Data.items.type.tool[item.i].class == Item_Data.class){

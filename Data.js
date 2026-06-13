@@ -87,7 +87,7 @@ export const items = {
                 statdesc:"[Agi+1][Dex+1]",
                 usage:"Equip",
                 tier: 0,
-                stats:[["Agility",1],["Dexterity",1]]
+                stats:[["Agility",1],["Perception",1]]
             }
         ],
         weapon:[
@@ -170,9 +170,13 @@ export const actions = {
 
 }
 
+const DA_groups = {
+    building:["run"],
+    outside:[]
+}
 export const locations = {
     MoveTo:function(player, location, action){
-        //disable current action
+        //action is usually null, so action gets set to nothing when moving
         player.Current_Location = location;
         player.Current_Action = action ? action : 'nothing';
     },
@@ -181,10 +185,6 @@ export const locations = {
     },
     OpenShop:function(){
 
-    },
-    disabled_action_list:{
-        building:["run"],
-        outside:[]
     },
     area:{
         "spawn":{
@@ -195,7 +195,7 @@ export const locations = {
                     //use later for locked options
                     return this.options
                 },
-                disabled_actions:"building",
+                disabled_actions:DA_groups.building,
                 options:[
                     {
                         text:'<span style="color: red;">[Area]</span> Leave the building',
@@ -233,7 +233,7 @@ export const locations = {
                 get_unlocked_options:function(){
                     return this.options
                 },
-                disabled_actions:"outside",
+                disabled_actions:["none"],
                 options:[
                     {
                         text:'<span style="color: red;">[Area]</span> Enter the building',

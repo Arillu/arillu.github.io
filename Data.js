@@ -51,7 +51,6 @@ export const items = {
                 slot:"Accessory",
                 class:"Artifact",
                 desc:"A Magic Rock",
-                statdesc:"[MP+1]",
                 usage:"Equip",
                 tier: 0,
                 stats:[["MP_Max",1]]
@@ -62,7 +61,6 @@ export const items = {
                 slot:"Accessory",
                 class:"Ring",
                 desc:"A ring craved from wood",
-                statdesc:"[Def+0.01]",
                 usage:"Equip",
                 tier: 0,
                 stats:[["Defense",0.01]]
@@ -73,7 +71,6 @@ export const items = {
                 slot:"Accessory",
                 class:"Necklace",
                 desc:"The enchantment still holds",
-                statdesc:"[Str+1]",
                 usage:"Equip",
                 tier: 0,
                 stats:[["Strength",1]]
@@ -84,7 +81,6 @@ export const items = {
                 slot:"Accessory",
                 class:"Artifact",
                 desc:"The feather seems to make you faster",
-                statdesc:"[Agi+1][Dex+1]",
                 usage:"Equip",
                 tier: 0,
                 stats:[["Agility",1],["Perception",1]]
@@ -97,7 +93,6 @@ export const items = {
                 slot:"Main Hand",
                 class:"Sword",
                 desc:"A sword made from low quality wood",
-                statdesc:"[Str+1]",
                 usage:"Equip",
                 tier: 0,
                 stats:[["Strength",1]]
@@ -108,7 +103,6 @@ export const items = {
                 slot:"Main Hand",
                 class:"Sword",
                 desc:"A quality sword forged from iron",
-                statdesc:"[Str+10]",
                 usage:"Equip",
                 tier: 1,
                 stats:[["Strength",10]]

@@ -468,33 +468,20 @@ body {
     line-height: 12px;
     color: #838383;
 }
-#item_info_stats{
+#item_info_description{
     position: absolute;
     font-size: 14px;
     width: 402px;
-    height: 32px;
+    height: 96px;
     top: 14px;
     left: 6px;
     text-align: center;
     border-bottom-style: solid;
     border-bottom-color: white;
     border-bottom-width: 1px;
-    box-sizing: border-box;
-    line-height: 14px;
-    overflow-y: scroll;
-    scrollbar-width: none;
-}
-#item_info_description{
-    position: absolute;
-    font-size: 14px;
-    width: 402px;
-    height: 64px;
-    top: 50px;
-    left: 6px;
-    text-align: center;
-    border-bottom-style: solid;
-    border-bottom-color: white;
-    border-bottom-width: 1px;
+    border-top-style: solid;
+    border-top-color: white;
+    border-top-width: 1px;
     box-sizing: border-box;
     line-height: 14px;
 }

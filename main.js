@@ -383,7 +383,7 @@ function CreateInventorySlot(Type, SlotId){
                 let ItemData = Data.items.type[Type][Item.i];
                 document.getElementById("item_info_type").innerHTML = (ItemData.class ? ItemData.class : "") + (ItemData.slot ? "/" + ItemData.slot : "");
                 document.getElementById("item_info_rarity").innerHTML = "Tier " + (ItemData.tier ? ItemData.tier : "0");
-                document.getElementById("item_info_stats").innerHTML = ItemData.statdesc ? ItemData.statdesc : "";
+                //document.getElementById("item_info_stats").innerHTML = ItemData.statdesc ? ItemData.statdesc : "";
                 document.getElementById("item_info_description").innerHTML = ItemData.desc ? ItemData.desc : "";
                 if (ItemData.usage){
                     document.getElementById("item_info_use").innerHTML = ItemData.usage;

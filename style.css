@@ -472,8 +472,8 @@ body {
     position: absolute;
     font-size: 14px;
     width: 402px;
-    height: 96px;
-    top: 14px;
+    height: 94px;
+    top: 16px;
     left: 6px;
     text-align: center;
     border-bottom-style: solid;
@@ -483,7 +483,7 @@ body {
     border-top-color: white;
     border-top-width: 1px;
     box-sizing: border-box;
-    line-height: 14px;
+    line-height: 20px;
 }
 #item_info_use{
     position: absolute;

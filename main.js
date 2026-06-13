@@ -11,7 +11,7 @@ let Current_Action = "nothing"
 let Item_Currently_Viewing = null;
 
 let Player = {
-    "Stats":{"Strength":1,"Endurance":1,"Agility":1,"Defense":1,"Intelligence":1,"Wisdom":1,"Perception":1,"Resistance":1,"HP":5,"HP_Max":10,"MP":5,"MP_Max":10,"Stam":5,"Stam_Max":10,"Exp":0,"Level":0},
+    "Stats":{"Strength":1,"Endurance":1,"Agility":1,"Defense":1,"Intelligence":1,"Wisdom":1,"Perception":1,"Resistance":1,"Damage":1,"Atk Spd":1,"HP":5,"HP_Max":10,"MP":5,"MP_Max":10,"Stam":5,"Stam_Max":10,"Exp":0,"Level":0},
     
     unlocked_actions:["run","rest"], //list of action names(from data.actions)
 
@@ -139,6 +139,8 @@ function UpdateStats(){
     document.getElementById("stat_wis").innerHTML = "Wisdom: " + stats.Wisdom;
     document.getElementById("stat_per").innerHTML = "Perception: " + stats.Perception;
     document.getElementById("stat_res").innerHTML = "Resistance: " + stats.Resistance;
+    document.getElementById("stat_dam").innerHTML = "Damage: " + stats.Damage;
+    document.getElementById("stat_spd").innerHTML = "Atk Spd: " + stats["Atk Spd"];
 }
 function UpdateCharacterBars(){
     let stats = GetTotalStats();

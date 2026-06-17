@@ -1,6 +1,4 @@
 
-
-
 export const items = {
     usage:{
         Eat:function(Player){
@@ -8,119 +6,101 @@ export const items = {
             //remove 1 item
         }
     },
-    type:{
-        tool:[//all equipable tools go here
-            {
-                id:0,
-                name:"old pickaxe",
-                class:"Pickaxe",
-                slot:"Tool",
-                usage:"Equip",
-                tier: 0
-            },
-            {
-                id:1,
-                name:"new pickaxe",
-                class:"Pickaxe",
-                slot:"Tool",
-                usage:"Equip",
-                tier: 1
-            },
-            {
-                id:2,
-                name:"old mat",
-                class:"Bed",
-                slot:"Tool",
-                usage:"Equip",
-                tier: 0,
-                action_stats:[["HP",2],["MP",2],["Stam",2]]
-            }
-        ],
-        bed:[
-            {
-                id:0,
-                name:"ground",
-                tier: 0,
-                action_stats:[["HP",1],["MP",1],["Stam",1]]
-            }
-        ],
-        accessory:[
-            {
-                id:0,
-                name:"Magic Rock",
-                slot:"Accessory",
-                class:"Artifact",
-                desc:"A Magic Rock",
-                usage:"Equip",
-                tier: 0,
-                stats:[["MP_Max",1]]
-            },
-            {
-                id:1,
-                name:"Wood Ring",
-                slot:"Accessory",
-                class:"Ring",
-                desc:"A ring craved from wood",
-                usage:"Equip",
-                tier: 0,
-                stats:[["Defense",0.01]]
-            },
-            {
-                id:2,
-                name:"Goblin's Necklace",
-                slot:"Accessory",
-                class:"Necklace",
-                desc:"The enchantment still holds",
-                usage:"Equip",
-                tier: 0,
-                stats:[["Strength",1]]
-            },
-            {
-                id:3,
-                name:"Swift Feather",
-                slot:"Accessory",
-                class:"Artifact",
-                desc:"The feather seems to make you faster",
-                usage:"Equip",
-                tier: 0,
-                stats:[["Agility",1],["Perception",1]]
-            }
-        ],
-        weapon:[
-            {
-                id:0,
-                name:"Wood Sword",
-                slot:"Main Hand",
-                class:"Sword",
-                desc:"A sword made from low quality wood",
-                usage:"Equip",
-                tier: 0,
-                stats:[["Strength",1]]
-            },
-            {
-                id:1,
-                name:"Iron Sword",
-                slot:"Main Hand",
-                class:"Sword",
-                desc:"A quality sword forged from iron",
-                usage:"Equip",
-                tier: 1,
-                stats:[["Strength",10]]
-            }
-        ],
-        consumable:[
-            {
-                id:0,
-                name:"Stale Bread",
-                class:"food",
-                tier: 0,
-                usage:"Eat",
-                useitem:(player)=>items.usage.Eat(player),
-                buffs:[["Food",150]],
-                stats:[]
-            }
-        ]
-    }
+    itemlist:[
+        {
+            id:0,
+            name:"old pickaxe",
+            inv_sort_list:"tool",
+            generic_type:"Pickaxe",
+            equip_slot:"Tool",
+            usage:"Equip",
+            desc:"An old pickaxe",
+            stats:[{t:"skill",n:"mining",v:1},
+                {t:"stat",n:"str",v:1}
+            ],
+            tier: 0
+        },
+        {
+            id:1,
+            name:"new pickaxe",
+            inv_sort_list:"tool",
+            generic_type:"Pickaxe",
+            equip_slot:"Tool",
+            usage:"Equip",
+            desc:"A new pickaxe",
+            stats:[{t:"skill",n:"mining",v:2},
+                {t:"stat",n:"str",v:5}
+            ],
+            tier: 1
+        },
+        {
+            id:2,
+            name:"Magic Rock",
+            inv_sort_list:"accessory",
+            generic_type:"Accessory",
+            equip_slot:"Accessory",
+            usage:"Equip",
+            desc:"A magical rock",
+            equip_stats:[{t:"stat",n:"int",v:1}],
+            tier: 0
+        },
+        {
+            id:3,
+            name:"Wood Ring",
+            inv_sort_list:"accessory",
+            generic_type:"Ring",
+            equip_slot:"Accessory",
+            usage:"Equip",
+            desc:"A wooden ring",
+            stats:[{t:"stat",n:"def",v:1}],
+            tier: 0
+        },
+        {
+            id:4,
+            name:"Wooden Sword",
+            inv_sort_list:"weapon",
+            generic_type:"Sword",
+            equip_slot:"Main Hand",
+            usage:"Equip",
+            desc:"A sword made from low quality wood",
+            stats:[{t:"stat",n:"str",v:1}],
+            tier: 0
+        },
+        {
+            id:5,
+            name:"Iron Sword",
+            inv_sort_list:"weapon",
+            generic_type:"Sword",
+            equip_slot:"Main Hand",
+            usage:"Equip",
+            desc:"A sword made from iron",
+            stats:[{t:"stat",n:"str",v:5}],
+            tier: 0
+        },
+        {
+            id:6,
+            name:"Stale Bread",
+            inv_sort_list:"consumable",
+            generic_type:"Food",
+            desc:"it's barely edible",
+            tier: 0,
+            usage:"Eat",
+            useitem:(player)=>items.usage.Eat(player),
+            stats:[{t:"buff",n:"food",v:150}]
+        },
+        {
+            id:7,
+            name:"old mat",
+            inv_sort_list:"tool",
+            generic_type:"Bed",
+            desc:"you can sleep on it",
+            tier: 0,
+            usage:"Equip",
+            useitem:(player)=>items.usage.Eat(player),
+            stats:[],
+            action_stats:[["HP",1],["MP",1],["Stam",1]]
+        }
+    ]
 
 }
 export const actions = {
@@ -210,7 +190,7 @@ export const locations = {
                     return this.options
                 },
                 actions:{
-                    sleep:{item:items.type.tool[2]}
+                    sleep:{item:items.itemlist[7]}
                 },
                 disabled_actions:"all",
                 options:[

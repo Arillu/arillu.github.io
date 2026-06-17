@@ -11,7 +11,7 @@ let Current_Action = "nothing"
 let Item_Currently_Viewing = null;
 
 let Player = {
-    "Stats":{"Strength":1,"Endurance":1,"Agility":1,"Defense":1,"Intelligence":1,"Wisdom":1,"Perception":1,"Resistance":1,"Damage":1,"Atk Spd":1,"HP":5,"HP_Max":10,"MP":5,"MP_Max":10,"Stam":5,"Stam_Max":10,"Exp":0,"Level":0},
+    "Stats":{"str":1,"end":1,"agi":1,"def":1,"int":1,"wis":1,"per":1,"res":1,"dam":1,"spd":1,"HP":5,"HP_Max":10,"MP":5,"MP_Max":10,"Stam":5,"Stam_Max":10,"Exp":0,"Level":0},
     
     unlocked_actions:["run","rest"], //list of action names(from data.actions)
 
@@ -53,14 +53,19 @@ let Player = {
         }
         UpdateCharacterBars();
     },
-    AddItem:(Id, Type, Amount, enchant)=>AddInventoryItem(Id, Type, Amount, enchant),//Data.items.type[Type][Id]
-    DeleteItem:(Key, Num, Amount, enchant)=>DeleteInventoryItem(Key, Num, Amount, enchant),//Inventory[Key][Num]
+    AddItem:(item)=>AddInventoryItem(item),//Data.items.itemlist[id]
+    DeleteItem:(key, num, amount)=>DeleteInventoryItem(key, num, amount),//Inventory[Key][Num]
     //i= id, a=amount, e=enchant, div=item slot div(delete from save), event=item slot click function(delete from save)
+    //B = Base_Item:ID id number for default item
+    //A = Amount:1 how many you have
+    //E = Enchantment:{quality, bonus stats, enchant ID}
+    //C = Custom_Stats:{quality, bonus stats} overides base item stats
+    // div=item slot div(delete from save), event=item slot click function(delete from save)
     Inventory:{
-        weapon:[{i:0,a:1},{i:1,a:5}],
-        tool:[{i:0,a:1},{i:1,a:7},{i:2,a:1}],
-        accessory:[{i:0,a:1},{i:1,a:7},{i:2,a:1},{i:3,a:1}],
-        consumable:[{i:0,a:5}]
+        weapon:[{i:4,a:1},{i:5,a:5},{i:4,a:1,e:{i:0,q:100,s:[{t:"stat",n:"int",v:1}]},c:{q:100,s:[{t:"stat",n:"str",v:7}]}}],
+        tool:[{i:0,a:1},{i:1,a:7}],
+        accessory:[{i:2,a:1},{i:3,a:7}],
+        consumable:[{i:6,a:15}]
     },
     Equipped:{//t= type
         Armor:{
@@ -108,12 +113,22 @@ function GetTotalStats(){//add buffs here later
     }
 
     function addstats(item){
-        let item_stats = Data.items.type[item.t][item.i].stats;
-        item_stats.forEach((stat)=>{ //itemstat= [[HP_Max,1],[Strength,1]]
-            total_stats[stat[0]] = total_stats[stat[0]] + stat[1];
-        });
-        if (item.e){
+        function getstats(change){
+          if (change.t == "stat"){
+                total_stats[change.n] = total_stats[change.n] + change.v;
+            }else if (change.t == "skill"){
 
+            }else{
+
+            }
+        }
+        if (item.c){
+            item.c.s.forEach((change)=>{getstats(change);});
+        }else{
+            Data.items.itemlist[item.i].stats.forEach((change)=>{getstats(change);});
+        }
+        if (item.e){
+            item.e.s.forEach((change)=>{getstats(change);});
         }
     }
     Object.keys(armor).slice(0,8).forEach((key)=>{
@@ -131,16 +146,16 @@ function GetTotalStats(){//add buffs here later
 
 function UpdateStats(){
     let stats = GetTotalStats();
-    document.getElementById("stat_str").innerHTML = "Strength: " + stats.Strength;
-    document.getElementById("stat_end").innerHTML = "Endurance: " + stats.Endurance;
-    document.getElementById("stat_agi").innerHTML = "Agility: " + stats.Agility;
-    document.getElementById("stat_def").innerHTML = "Defense: " + stats.Defense;
-    document.getElementById("stat_int").innerHTML = "Intelligence: " + stats.Intelligence;
-    document.getElementById("stat_wis").innerHTML = "Wisdom: " + stats.Wisdom;
-    document.getElementById("stat_per").innerHTML = "Perception: " + stats.Perception;
-    document.getElementById("stat_res").innerHTML = "Resistance: " + stats.Resistance;
-    document.getElementById("stat_dam").innerHTML = "Damage: " + stats.Damage;
-    document.getElementById("stat_spd").innerHTML = "Atk Spd: " + stats["Atk Spd"];
+    document.getElementById("stat_str").innerHTML = "Strength: " + stats.str;
+    document.getElementById("stat_end").innerHTML = "Endurance: " + stats.end;
+    document.getElementById("stat_agi").innerHTML = "Agility: " + stats.agi;
+    document.getElementById("stat_def").innerHTML = "Defense: " + stats.def;
+    document.getElementById("stat_int").innerHTML = "Intelligence: " + stats.int;
+    document.getElementById("stat_wis").innerHTML = "Wisdom: " + stats.wis;
+    document.getElementById("stat_per").innerHTML = "Perception: " + stats.per;
+    document.getElementById("stat_res").innerHTML = "Resistance: " + stats.res;
+    document.getElementById("stat_dam").innerHTML = "Damage: " + stats.dam;
+    document.getElementById("stat_spd").innerHTML = "Atk Spd: " + stats.spd;
 }
 function UpdateCharacterBars(){
     let stats = GetTotalStats();
@@ -240,7 +255,7 @@ function UpdateEquipmentUI(){
     let j = 1;
     for (; j < Player.Equipped.Tools.length+1; j++) {
         let div = document.getElementById("tool" + j)
-        updateslot(div, Data.items.type[(Player.Equipped.Tools[j-1].t)][(Player.Equipped.Tools[j-1].i)].name, true)
+        updateslot(div, Data.items.itemlist[(Player.Equipped.Tools[j-1].i)].name, true)
     }
     for (; j < 11; j++){
         updateslot(document.getElementById("tool" + j), "no tool", false)
@@ -253,14 +268,14 @@ function UpdateEquipmentUI(){
         if (key == "2Hand"){
             if (len > 0){
                 //2Hand comes after Mainhand and offhand in the loop
-                updateslot(document.getElementById("eq_Main_Hand"), Data.items.type[(Player.Equipped.Armor[key].t)][(Player.Equipped.Armor[key].i)].name, true);
+                updateslot(document.getElementById("eq_Main_Hand"), Data.items.itemlist[(Player.Equipped.Armor[key].i)].name, true);
                 updateslot(document.getElementById("eq_Off_Hand"), "-", true);
             }
         }
         else if (key=="Accessory") {
             let i = 1;
             Player.Equipped.Armor[key].forEach((item)=>{
-                updateslot(document.getElementById("eq_Acs"+(i)), Data.items.type[item.t][item.i].name, true);
+                updateslot(document.getElementById("eq_Acs"+(i)), Data.items.itemlist[item.i].name, true);
                 i++;
             });
             for (; i < 4; i++){
@@ -268,7 +283,7 @@ function UpdateEquipmentUI(){
             }
         }
         else if (len > 0) {
-            updateslot(div, Data.items.type[(Player.Equipped.Armor[key].t)][(Player.Equipped.Armor[key].i)].name, true)
+            updateslot(div, Data.items.itemlist[(Player.Equipped.Armor[key].i)].name, true)
         }else{
             updateslot(div, key, false)
         }
@@ -334,7 +349,7 @@ function Increase_Time_Date(Minutes) {
 }
 
 
-function TrimInventoryData(){//for saving the data
+function TrimInventoryData(){//for saving the data removes the div and event from the item
     let Trimed_Inventory = {}
     Object.keys(Player.Inventory).forEach((Item_Type)=>{
         Trimed_Inventory[Item_Type] = [];
@@ -342,6 +357,9 @@ function TrimInventoryData(){//for saving the data
             let slot = {"i":Item.i,"a":Item.a};
             if (Item.e){
                 slot["e"] = Item.e;
+            }
+            if (Item.c){
+                slot["c"] = Item.c;
             }
             Trimed_Inventory[Item_Type].push(slot);
         });
@@ -351,7 +369,7 @@ function TrimInventoryData(){//for saving the data
 
 function DeleteInventoryItem(Key, Num, Amount){
     let Item = Player.Inventory[Key][Num]
-    let newAmount = Amount ? ((Item.a-Amount)< 1 ? 0 : (Item.a-Amount)): 0
+    let newAmount = Amount ? ((Item.a-Amount)< 1 ? 0 : (Item.a-Amount)) : 0
     if (newAmount===0){
         if (Item.event){
             Item.div.removeEventListener("click", Item.event);
@@ -371,7 +389,7 @@ function CreateInventorySlot(Type, SlotId){
     let Item = Player.Inventory[Type][SlotId];
 
     Item.div = document.createElement("div");
-    Item.div.innerHTML = Data.items.type[Type][Item.i].name + '<div class="inventory_slot_amount">x' + Item.a + '</div>'
+    Item.div.innerHTML = Data.items.itemlist[Item.i].name + '<div class="inventory_slot_amount">x' + Item.a + '</div>'
     Item.div.setAttribute("class", "inventory_slot");
     document.getElementById("inventory_top").appendChild(Item.div);
 
@@ -382,8 +400,8 @@ function CreateInventorySlot(Type, SlotId){
         if (!Item_click_spam_debounce){
             Item_click_spam_debounce = true;
             function change_info(){
-                let ItemData = Data.items.type[Type][Item.i];
-                document.getElementById("item_info_type").innerHTML = (ItemData.class ? ItemData.class : "") + (ItemData.slot ? "/" + ItemData.slot : "");
+                let ItemData = Data.items.itemlist[Item.i];
+                document.getElementById("item_info_type").innerHTML = (ItemData.generic_type ? ItemData.generic_type : "") + (ItemData.equip_slot ? "/" + ItemData.equip_slot : "");
                 document.getElementById("item_info_rarity").innerHTML = "Tier " + (ItemData.tier ? ItemData.tier : "0");
                 //document.getElementById("item_info_stats").innerHTML = ItemData.statdesc ? ItemData.statdesc : "";
                 document.getElementById("item_info_description").innerHTML = ItemData.desc ? ItemData.desc : "";
@@ -417,25 +435,31 @@ function CreateInventorySlot(Type, SlotId){
     Item.div.addEventListener("click", Item.event);
 }
 
-function AddInventoryItem(Id, Type, amount, enchant){
-    let ItemData = Data.items.type[Type][Id];
-    let location = Player.Inventory[Type];
+function AddInventoryItem(new_item){
+    let ItemData = Data.items.itemlist[new_item.i];
+    let location = Player.Inventory[ItemData.inv_sort_list];
     if (!location){
         location = [];
     }
-   if (location.every((item)=>{
-        if (item.i === Id){
-            item.a = item.a + 1
+
+    function additem(){
+        location.push(new_item);
+        let Slotnum = location.length - 1;
+        CreateInventorySlot(ItemData.inv_sort_list, Slotnum);
+    }
+
+
+    if (new_item.c || new_item.e){
+        additem();
+    }else if (location.every((item)=>{
+        if ((item.i === new_item.i) &&(!item.c && !item.e)){
+            item.a = item.a + new_item.a
             item.div.getElementsByClassName("inventory_slot_amount")[0].innerHTML = "x" + item.a;
             return false;
         }
         return true;
     })){
-        let NewItem = {i:ItemData.id,a:amount};
-        location.push(NewItem);
-        let Slotnum = location.length - 1;
-    
-        CreateInventorySlot(Type, Slotnum);
+        additem();
     }
 }
 
@@ -443,15 +467,15 @@ function UnEquipItem(slot, location_id){
     let armor = Player.Equipped.Armor;
     let tools = Player.Equipped.Tools;
     if (slot == "Tool"){
-        AddInventoryItem(tools[location_id].i, tools[location_id].t, 1);
+        AddInventoryItem(tools[location_id]);
         tools.splice(location_id,1);
     }
     else if(slot == "Accessory"){
-        AddInventoryItem(armor[slot][location_id].i, armor[slot][location_id].t, 1);
+        AddInventoryItem(armor[slot][location_id]);
         armor[slot].splice(location_id,1);        
     }
     else{
-        AddInventoryItem(armor[slot].i, armor[slot].t, 1);
+        AddInventoryItem(armor[slot]);
         armor[slot] = {};
     }
     UpdateEquipmentUI();
@@ -459,21 +483,19 @@ function UnEquipItem(slot, location_id){
 
 function EquipItem(Type,SlotId){
     let Item = Item_Currently_Viewing[0];
-    let Item_Data = Data.items.type[Type][Item.i];
-    let slot = Item_Data.slot;
+    let Item_Data = Data.items.itemlist[Item.i];
+    let slot = Item_Data.equip_slot;
     let armor = Player.Equipped.Armor;
     let tools = Player.Equipped.Tools;
     //need too add stats
-    let newitem;
-    try {
-        newitem = structuredClone({i:Item_Data.id,t:Type});
-    }catch(error){
-        newitem = JSON.parse(JSON.stringify({i:Item_Data.id,t:Type}));
-    }
+    let newitem = JSON.parse(JSON.stringify(Item));
+    newitem.a = 1;
+    
+    
 
     if (slot == "Tool"){
-        tools.every((item, location)=>{
-            if (Data.items.type.tool[item.i].class == Item_Data.class){
+        tools.every((tool, location)=>{
+            if (Data.items.itemlist[tool.i].generic_type == Item_Data.generic_type){
                 UnEquipItem(slot, location);
                 return false
             }
@@ -494,8 +516,18 @@ function EquipItem(Type,SlotId){
         DeleteInventoryItem(Type,SlotId,1);
     }
     else if (slot){
-        if (armor[slot].i !== undefined){//item currently equipped
-            UnEquipItem(slot);
+        function unequip(name){
+            if (armor[name].i !== undefined){
+                UnEquipItem(name);
+            }
+        }
+
+        unequip(slot);
+        if(slot == "2Hand"){
+            unequip("Main Hand");
+            unequip("Off Hand");
+        }else if((slot == "Main Hand") || (slot == "Off Hand")){
+            unequip("2Hand");
         }
         armor[slot] = newitem;
         DeleteInventoryItem(Type,SlotId,1);
@@ -525,7 +557,7 @@ function SetupInventoryItemInfo(){
             debounce = true;
             let SlotId = getslotid();
             if (SlotId !== null){
-                let item = Data.items.type[Item_Currently_Viewing[1]][Item_Currently_Viewing[0].i];
+                let item = Data.items.itemlist[Item_Currently_Viewing[0].i];
                 if(item.usage === "Equip"){
                     EquipItem(Item_Currently_Viewing[1], SlotId);
                 }

@@ -1,4 +1,4 @@
-import * as Data from './Data.js?v=23';
+import * as Data from './Data.js?v=24';
 
 
 let Game_Paused = false;
@@ -48,7 +48,7 @@ let Player = {
         resource_list.forEach((resource)=>{
             if (resource.t == "stat"){
                 let stat = this.Stats[resource.n];
-                let stat_max = this.Stats[resource_list.n + "_Max"];
+                let stat_max = this.Stats[resource.n + "_Max"];
                 let total = stat + resource.v;
                 stat = (total > stat_max) ? stat_max : total;
             }

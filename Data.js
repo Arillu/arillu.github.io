@@ -98,7 +98,7 @@ export const items = {
             usage:"Equip",
             useitem:(player)=>items.usage.Eat(player),
             stats:[],
-            action_stats:[["HP",1],["MP",1],["Stam",1]]
+            action_stats:[{t:"stat",n:"HP",v:1},{t:"stat",n:"MP",v:1}]
         }
     ]
 

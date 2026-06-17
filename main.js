@@ -44,13 +44,15 @@ let Player = {
         UpdateActionUI();
         UpdateDialougeUI();
     },
-    Restore_Resource:function(resource_list){
-        for (let i = 0; i < resource_list.length; i++) {
-            let stat = this.Stats[resource_list[i][0]];
-            let stat_max = this.Stats[resource_list[i][0] + "_Max"];
-            let total = stat + resource_list[i][1];
-            this.Stats[resource_list[i][0]] = (total > stat_max) ? stat_max : total;
-        }
+    Restore_Resource:function(resource_list){ //HP, Mp, Stam, and buffs
+        resource_list.forEach((resource)=>{
+            if (resource.t == "stat"){
+                let stat = this.Stats[resource.n];
+                let stat_max = this.Stats[resource_list.n + "_Max"];
+                let total = stat + resource.v;
+                stat = (total > stat_max) ? stat_max : total;
+            }
+        });
         UpdateCharacterBars();
     },
     AddItem:(item)=>AddInventoryItem(item),//Data.items.itemlist[id]

@@ -1,4 +1,4 @@
-import * as Data from './Data.js?v=22';
+import * as Data from './Data.js?v=23';
 
 
 let Game_Paused = false;

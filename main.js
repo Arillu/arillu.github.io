@@ -427,8 +427,8 @@ function CreateInventorySlot(Type, SlotId){
 
     const hoverdiv = document.getElementById('mouse_hover_info')
     function hover(mouse){
-        this.div.style.left = mouse.clientX + 'px';
-        this.div.style.top = mouse.clientY + 'px';
+        hoverdiv.style.left = mouse.clientX + 'px';
+        hoverdiv.style.top = mouse.clientY + 'px';
     }
 
     Item.mouseover = function hover_item(){

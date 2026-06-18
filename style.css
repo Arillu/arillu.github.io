@@ -90,7 +90,7 @@ body {
     position: relative;
     background-color: rgba(126, 126, 126, 0.5);
 }
-#stamina_bar_holder{
+#hunger_bar_holder{
     z-index: 4;
     top: 15px;
     left: 10px;
@@ -114,7 +114,7 @@ body {
 #hp_bar {
     background: linear-gradient(90deg,rgb(145, 8, 8),rgb(167, 57, 57));
 }
-#stamina_bar {
+#hunger_bar {
     background: linear-gradient(90deg,rgb(216, 112, 16),rgb(145, 80, 6));
 }
 #mana_bar {

@@ -11,7 +11,7 @@ let Current_Action = "nothing"
 let Item_Currently_Viewing = null;
 
 let Player = {
-    "Stats":{"str":1,"end":1,"agi":1,"def":1,"int":1,"wis":1,"per":1,"res":1,"dam":1,"spd":1,"HP":5,"HP_Max":10,"MP":5,"MP_Max":10,"Stam":5,"Stam_Max":10,"Exp":0,"Level":0},
+    "Stats":{"str":1,"end":1,"agi":1,"def":1,"int":1,"wis":1,"per":1,"res":1,"dam":1,"spd":1,"HP":5,"HP_Max":10,"MP":5,"MP_Max":10,"Hun":200,"Hun_Max":250,"Exp":0,"Level":0},
     
     unlocked_actions:["run","rest"], //list of action names(from data.actions)
 
@@ -44,7 +44,7 @@ let Player = {
         UpdateActionUI();
         UpdateDialougeUI();
     },
-    Restore_Resource:function(resource_list){ //HP, Mp, Stam, and buffs
+    Restore_Resource:function(resource_list){ //HP, Mp, Hunger, and buffs
         resource_list.forEach((resource)=>{
             if (resource.t == "stat"){
                 let stat = this.Stats[resource.n];
@@ -57,11 +57,9 @@ let Player = {
     },
     AddItem:(item)=>AddInventoryItem(item),//Data.items.itemlist[id]
     DeleteItem:(key, num, amount)=>DeleteInventoryItem(key, num, amount),//Inventory[Key][Num]
-    //i= id, a=amount, e=enchant, div=item slot div(delete from save), event=item slot click function(delete from save)
-    //B = Base_Item:ID id number for default item
-    //A = Amount:1 how many you have
-    //E = Enchantment:{quality, bonus stats, enchant ID}
-    //C = Custom_Stats:{quality, bonus stats} overides base item stats
+    //i= id, a=amount, e=enchant, c=custom stats, div=item slot div(delete from save), event=item slot click function(delete from save)
+    //Enchantment:{enchant ID, enchant quality, bonus stats}
+    //Custom_Stats:{craft quality, bonus stats} overides base item stats
     // div=item slot div(delete from save), event=item slot click function(delete from save)
     Inventory:{
         weapon:[{i:4,a:1},{i:5,a:5},{i:4,a:1,e:{i:0,q:100,s:[{t:"stat",n:"int",v:1}]},c:{q:100,s:[{t:"stat",n:"str",v:7}]}}],
@@ -125,12 +123,12 @@ function GetTotalStats(){//add buffs here later
             }
         }
         if (item.c){
-            item.c.s.forEach((change)=>{getstats(change);});
+            item.c.s.forEach((change)=>getstats(change));
         }else{
-            Data.items.itemlist[item.i].stats.forEach((change)=>{getstats(change);});
+            Data.items.itemlist[item.i].stats.forEach((change)=>getstats(change));
         }
         if (item.e){
-            item.e.s.forEach((change)=>{getstats(change);});
+            item.e.s.forEach((change)=>getstats(change));
         }
     }
     Object.keys(armor).slice(0,8).forEach((key)=>{
@@ -139,9 +137,7 @@ function GetTotalStats(){//add buffs here later
             addstats(item);
         }
     });
-    armor.Accessory.forEach((item)=>{
-        addstats(item);
-    });
+    armor.Accessory.forEach((item)=>addstats(item));
     
     return total_stats;
 }
@@ -171,8 +167,8 @@ function UpdateCharacterBars(){
     document.getElementById("char_hp").innerHTML = (Player.Stats.HP + "/" + stats.HP_Max);
     document.getElementById("hp_bar").style.setProperty('width', Trim(Player.Stats.HP/stats.HP_Max));
 
-    document.getElementById("char_stamina").innerHTML = (Player.Stats.Stam + "/" + stats.Stam_Max);
-    document.getElementById("stamina_bar").style.setProperty('width', Trim(Player.Stats.Stam/stats.Stam_Max));
+    document.getElementById("char_hunger").innerHTML = (Player.Stats.Hun + "/" + stats.Hun_Max);
+    document.getElementById("hunger_bar").style.setProperty('width', Trim(Player.Stats.Hun/stats.Hun_Max));
 
     document.getElementById("char_mp").innerHTML = (Player.Stats.MP + "/" + stats.MP_Max);
     document.getElementById("mana_bar").style.setProperty('width', Trim(Player.Stats.MP/stats.MP_Max));
@@ -212,17 +208,9 @@ function UpdateDialougeUI(){
     current_dialouge_options = [];
     
     //create new options
-    let current_location;
-    try{
-        current_location = Data.locations.area[Player.Current_Location.area][Player.Current_Location.location];
-    }catch{
-        console.warn("Location invalid moved to spawn")
-        current_location = Data.locations.area.spawn.start;
-        Current_Location = {area:"spawn", location:"start"};
-    }
+    let c_location = Data.locations.area[Player.Current_Location.area][Player.Current_Location.location];
 
-
-    let dialouge_options = current_location.get_unlocked_options();
+    let dialouge_options = c_location.get_unlocked_options();
     function CreateDialougeOption(option_data){
         let option = document.createElement("div");
         option.innerHTML = option_data.text;
@@ -236,10 +224,8 @@ function UpdateDialougeUI(){
         option.addEventListener("click", eventfunction);
     }
 
-    document.getElementById("game_dialouge_spoken").innerHTML = current_location.top_text;
-    dialouge_options.forEach((option)=>{
-        CreateDialougeOption(option);
-    });
+    document.getElementById("game_dialouge_spoken").innerHTML = c_location.top_text;
+    dialouge_options.forEach((option)=>CreateDialougeOption(option));
 }
 
 
@@ -699,13 +685,9 @@ function Load_Game() {
         Player.unlocked_actions = retrive_data.unlocked_actions;
     }
     Object.keys(Player.Inventory).forEach((Item_Type)=>{
-        Player.Inventory[Item_Type].forEach((a, SlotId)=>{
-            CreateInventorySlot(Item_Type, SlotId);
-        });
+        Player.Inventory[Item_Type].forEach((a, SlotId)=>CreateInventorySlot(Item_Type, SlotId));
     })
-    Player.unlocked_actions.forEach((action)=>{
-        CreateActionSlot(action);
-    });
+    Player.unlocked_actions.forEach((action)=>CreateActionSlot(action));
 
     UpdateTime();
     UpdateStats();

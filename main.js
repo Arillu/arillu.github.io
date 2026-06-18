@@ -1,4 +1,4 @@
-import * as Data from './Data.js?v=30';
+import * as Data from './Data.js?v=31';
 
 
 let Game_Paused = false;
@@ -430,10 +430,13 @@ function CreateInventorySlot(Type, SlotId){
         hoverdiv.style.left = (mouse.clientX + 20) + 'px';
         hoverdiv.style.top = mouse.clientY + 'px';
     }
-
+    function updatehoverinfo(item){
+       
+    }
     Item.mouseover = function hover_item(){
         document.removeEventListener("mousemove", hover);
         hoverdiv.removeAttribute("hidden");
+        updatehoverinfo(this);
         document.addEventListener('mousemove',hover);
     }
     Item.mouseout = function exit_item(){

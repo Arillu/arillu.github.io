@@ -16,6 +16,7 @@ body {
     line-height: 14px;
     font-family: 'Arial';
     color: #ffffff;
+    pointer-events: 'none';
 }
 
 #main_game {

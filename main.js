@@ -1,4 +1,4 @@
-import * as Data from './Data.js?v=27';
+import * as Data from './Data.js?v=28';
 
 
 let Game_Paused = false;
@@ -374,12 +374,8 @@ function DeleteInventoryItem(Key, Num, Amount){
     document.getElementById("inventory_item_info").setAttribute("hidden","");
     Item_Currently_Viewing = null;
 }
-const hoverdiv = {div:document.getElementById('mouse_hover_info'),
-        func:function(mouse){
-            this.div.style.left = mouse.clientX + 'px';
-            this.div.style.top = mouse.clientY + 'px';
-        }
-    }
+
+
 function CreateInventorySlot(Type, SlotId){
     let Item = Player.Inventory[Type][SlotId];
 
@@ -429,14 +425,20 @@ function CreateInventorySlot(Type, SlotId){
     }
     Item.div.addEventListener("click", Item.event);
 
+    const hoverdiv = document.getElementById('mouse_hover_info')
+    function hover(mouse){
+        this.div.style.left = mouse.clientX + 'px';
+        this.div.style.top = mouse.clientY + 'px';
+    }
+
     Item.mouseover = function hover_item(){
-        document.removeEventListener("mousemove", hoverdiv.func);
-        hoverdiv.div.removeAttribute("hidden");
-        document.addEventListener('mousemove',hoverdiv.func);
+        document.removeEventListener("mousemove", hover);
+        hoverdiv.removeAttribute("hidden");
+        document.addEventListener('mousemove',hover);
     }
     Item.mouseout = function exit_item(){
-        document.removeEventListener("mousemove", hoverdiv.func);
-        hoverdiv.div.setAttribute("hidden","");
+        document.removeEventListener("mousemove", hover);
+        hoverdiv.setAttribute("hidden","");
     }
     Item.div.addEventListener("mouseover", Item.mouseover);
     Item.div.addEventListener("mouseout", Item.mouseout);

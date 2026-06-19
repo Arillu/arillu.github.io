@@ -435,10 +435,18 @@ function CreateInventorySlot(Type, SlotId){
     
     function updatehoverinfo(item_h){
         hoverdiv.innerHTML = "";
+        hoverdiv.style.height = "0px";
         function createtag(tag){
             let div = document.createElement(tag);
             div.setAttribute("class", ((tag == "p") ? "hover_info_details" : "hover_info_bar"));
             hoverdiv.appendChild(div);
+
+            hoverdiv_height = Number(hoverdiv.style.height.slice(0,-2));
+            if (tag=="p"){
+                hoverdiv.style.height = (hoverdiv_height + 26) + "px";
+            }else{
+                hoverdiv.style.height = (hoverdiv_height + 2) + "px";
+            }
             return div;
         }
         function createtitle(name, quality){
@@ -448,10 +456,8 @@ function CreateInventorySlot(Type, SlotId){
             createtag("div");
         }
         function createinforows(statlist){
-            hoverdiv.setAttribute("style",("height: " + (52 + statlist.length*24) + "px;"))//52=height of title and 1div, 24 is height of div
             statlist.forEach((stat)=>{
                 let div = createtag("p");
-
                 let statname_text = (stat.t == "stat") ? stat.n.toUpperCase() : ('<span style="color:hotpink">[' + stat.n + ']</span>');
                 let value_text = ((stat.v > 0) ? ('<span style="color:green">+' + stat.v + '</span>') : ('<span style="color:red">' + stat.v + '</span>'));
 

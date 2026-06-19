@@ -11,6 +11,17 @@ export const quality = {
         }
     }
 }
+export const enchants = {
+    enchantlist:[
+        {
+            id:0,
+            name:"Low Grade Sharpness Enchant",
+            stats:[{t:"stat",n:"str",v:1}],
+            tier:0,
+            quality:0
+        }
+    ]
+}
 export const items = {
     usage:{
         Eat:function(Player){

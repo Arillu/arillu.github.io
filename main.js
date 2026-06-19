@@ -1,4 +1,4 @@
-import * as Data from './Data.js?v=40';
+import * as Data from './Data.js?v=41';
 
 
 let Game_Paused = false;
@@ -58,11 +58,11 @@ let Player = {
     AddItem:(item)=>AddInventoryItem(item),//Data.items.itemlist[id]
     DeleteItem:(key, num, amount)=>DeleteInventoryItem(key, num, amount),//Inventory[Key][Num]
     //i= id, a=amount, e=enchant, c=custom stats, div=item slot div(delete from save), event=item slot click function(delete from save)
-    //Enchantment:{enchant ID, enchant quality, bonus stats}
+    //Enchantment:enchant ID
     //Custom_Stats:{craft quality, bonus stats} overides base item stats
     // div=item slot div(delete from save), event=item slot click function(delete from save)
     Inventory:{
-        weapon:[{i:4,a:1},{i:5,a:5},{i:4,a:1,e:{i:0,q:100,s:[{t:"stat",n:"int",v:1}]},c:{q:100,s:[{t:"stat",n:"str",v:7}]}}],
+        weapon:[{i:4,a:1},{i:5,a:5},{i:4,a:1,e:0,c:{q:100,s:[{t:"stat",n:"str",v:7}]}}],
         tool:[{i:0,a:1},{i:1,a:7}],
         accessory:[{i:2,a:1},{i:3,a:7}],
         consumable:[{i:6,a:15}]
@@ -433,21 +433,20 @@ function CreateInventorySlot(Type, SlotId){
         hoverdiv.style.top = mouse.clientY + 'px';
     }
     
-    function updatehoverinfo(item_h, quality, item_name){
+    function updatehoverinfo(item_h){
+        hoverdiv.innerHTML = "";
         function createtag(tag){
             let div = document.createElement(tag);
             div.setAttribute("class", ((tag == "p") ? "hover_info_details" : "hover_info_bar"));
             hoverdiv.appendChild(div);
             return div;
         }
-        hoverdiv.innerHTML = "";
-        let title = createtag("p");
-        let title_color = Data.quality.color(quality);
-        console.log(title_color);
-        console.log(item_name);
-        title.innerHTML = '<span style="' + title_color + '">' + item_name + '</span>';
-        createtag("div");
-
+        function createtitle(name, quality){
+            let title = createtag("p");
+            let title_color = Data.quality.color(quality);
+            title.innerHTML = '<span style="' + title_color + '">' + item_name + '</span>';
+            createtag("div");
+        }
         function createinforows(statlist){
             hoverdiv.setAttribute("style",("height: " + (52 + statlist.length*24) + "px;"))//52=height of title and 1div, 24 is height of div
             statlist.forEach((stat)=>{
@@ -462,12 +461,16 @@ function CreateInventorySlot(Type, SlotId){
         }
         let item_h_data = Data.items.itemlist[item_h.i];
         if (item_h.c){
-            createinforows(item_h.c.s, item_h.c.q, item_h_data.name);
+            createtitle(item_h_data.name, item_h.c.q);
+            createinforows(item_h.c.s);
         }else{
-            createinforows(item_h_data.stats, item_h_data.quality, item_h_data.name);
+            createtitle(item_h_data.name, item_h_data.quality)
+            createinforows(item_h_data.stats);
         }
         if (item_h.e){
-            //add enchantment here
+            item_h_enchant = Data.enchants.enchantlist[item_h.e]
+            createtitle(item_h_enchant.name, item_h_enchant.quality);
+            createinforows(item_h_enchant.stats);            
         }
     }
     Item.mouseover = function hover_item(){

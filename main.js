@@ -452,14 +452,14 @@ function CreateInventorySlot(Type, SlotId){
         function createtitle(name, quality){
             let title = createtag("p");
             let title_color = Data.quality.color(quality);
-            title.innerHTML = '<span style="' + title_color + '">' + name + '</span>';
+            title.innerHTML = '<span style="color:' + title_color + ';">' + name + '</span>';
             createtag("div");
         }
         function createinforows(statlist){
             statlist.forEach((stat)=>{
                 let div = createtag("p");
-                let statname_text = (stat.t == "stat") ? stat.n.toUpperCase() : ('<span style="color:hotpink">[' + stat.n + ']</span>');
-                let value_text = ((stat.v > 0) ? ('<span style="color:green">+' + stat.v + '</span>') : ('<span style="color:red">' + stat.v + '</span>'));
+                let statname_text = (stat.t == "stat") ? stat.n.toUpperCase() : ('<span style="color:hotpink;">[' + stat.n + ']</span>');
+                let value_text = ((stat.v > 0) ? ('<span style="color:green;">+' + stat.v + '</span>') : ('<span style="color:red;">' + stat.v + '</span>'));
 
                 div.innerHTML = (statname_text + ' ' + value_text);
             })

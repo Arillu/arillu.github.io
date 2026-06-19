@@ -1,4 +1,4 @@
-import * as Data from './Data.js?v=37';
+import * as Data from './Data.js?v=38';
 
 
 let Game_Paused = false;
@@ -435,6 +435,7 @@ function CreateInventorySlot(Type, SlotId){
             row.remove();
         });
         function createinforows(statlist){
+            hoverdiv.setAttribute("style",("height: " + (52 + statlist.length*24) + "px;"))//52=height of title and 1div, 24 is height of div
             statlist.forEach((stat)=>{
                 let div = document.createElement('p');
                 div.setAttribute("class","hover_info_details");

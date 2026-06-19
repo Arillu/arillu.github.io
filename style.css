@@ -12,10 +12,11 @@ body {
     z-index: 99;
     border: 3px solid #ffffff;
     background: linear-gradient(90deg,rgb(25, 23, 46),rgb(38, 35, 65));
-    font-size: 14px;
-    line-height: 14px;
+    font-size: 16px;
+    line-height: 16px;
     font-family: 'Arial';
     color: #ffffff;
+    text-align: center;
     pointer-events: 'none';
 }
 #hover_info_title{
@@ -24,9 +25,6 @@ body {
     left: 5px;
     top: 2px;
     height:18px;
-    font-size: 16px;
-    text-align: center;
-    line-height: 16px;
     border-bottom-color: #ffffff;
     border-bottom: 2px;
     border-bottom-style: solid;
@@ -37,8 +35,7 @@ body {
     left: 20px;
     width: 200px;
     height: 258px;
-    text-align: left;
-    line-height: 16px;
+    margin: 2px;
     pointer-events: 'none';
 }
 #hover_info_footer{

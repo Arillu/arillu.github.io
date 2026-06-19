@@ -11,7 +11,7 @@ let Current_Action = "nothing"
 let Item_Currently_Viewing = null;
 
 let Player = {
-    "Stats":{"str":1,"end":1,"agi":1,"def":1,"int":1,"wis":1,"per":1,"res":1,"dam":1,"spd":1,"HP":5,"HP_Max":10,"MP":5,"MP_Max":10,"Hun":200,"Hun_Max":250,"Exp":0,"Level":0},
+    "Stats":{"str":1,"int":1,"agi":1,"lck":0,"def":0,"spd":1,"HP":5,"HP_Max":10,"MP":5,"MP_Max":10,"Hun":200,"Hun_Max":250,"Exp":0,"Level":0},
     
     unlocked_actions:["run","rest"], //list of action names(from data.actions)
 
@@ -147,15 +147,16 @@ function GetTotalStats(){//add buffs here later
 function UpdateStats(){
     let stats = GetTotalStats();
     document.getElementById("stat_str").innerHTML = "Strength: " + stats.str;
-    document.getElementById("stat_end").innerHTML = "Endurance: " + stats.end;
-    document.getElementById("stat_agi").innerHTML = "Agility: " + stats.agi;
-    document.getElementById("stat_def").innerHTML = "Defense: " + stats.def;
     document.getElementById("stat_int").innerHTML = "Intelligence: " + stats.int;
+    document.getElementById("stat_agi").innerHTML = "Agility: " + stats.agi;
+    document.getElementById("stat_lck").innerHTML = "Luck: " + stats.lck;
+    document.getElementById("stat_def").innerHTML = "Defense: " + stats.def;
+    document.getElementById("stat_spd").innerHTML = "Atk Spd: " + stats.spd;
     document.getElementById("stat_wis").innerHTML = "Wisdom: " + stats.wis;
     document.getElementById("stat_per").innerHTML = "Perception: " + stats.per;
     document.getElementById("stat_res").innerHTML = "Resistance: " + stats.res;
     document.getElementById("stat_dam").innerHTML = "Damage: " + stats.dam;
-    document.getElementById("stat_spd").innerHTML = "Atk Spd: " + stats.spd;
+    
 }
 function UpdateCharacterBars(){
     let stats = GetTotalStats();

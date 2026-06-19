@@ -1,4 +1,4 @@
-import * as Data from './Data.js?v=41';
+import * as Data from './Data.js?v=42';
 
 
 let Game_Paused = false;
@@ -441,7 +441,7 @@ function CreateInventorySlot(Type, SlotId){
             div.setAttribute("class", ((tag == "p") ? "hover_info_details" : "hover_info_bar"));
             hoverdiv.appendChild(div);
 
-            hoverdiv_height = Number(hoverdiv.style.height.slice(0,-2));
+            let hoverdiv_height = Number(hoverdiv.style.height.slice(0,-2));
             if (tag=="p"){
                 hoverdiv.style.height = (hoverdiv_height + 26) + "px";
             }else{

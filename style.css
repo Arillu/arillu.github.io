@@ -11,8 +11,8 @@ body {
     z-index: 99;
     border: 3px solid #ffffff;
     background: linear-gradient(90deg,rgb(25, 23, 46),rgb(38, 35, 65));
-    font-size: 16px;
-    line-height: 16px;
+    font-size: 14px;
+    line-height: 14px;
     font-family: 'Arial';
     color: #ffffff;
     text-align: center;
@@ -34,6 +34,7 @@ body {
     height: 18px;
     margin: 3px;
     pointer-events: 'none';
+    text-wrap: nowrap;
 }
 
 #main_game {

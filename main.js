@@ -22,7 +22,7 @@ let Player = {
     },
     set Current_Action(value){
         if (Current_Action !== "nothing"){
-            let msg = "You <span style='color: red;'>stopped</span> " + Data.actions[Current_Action].msg;
+            let msg = 'You '+ AddTextColor("stopped", "red") + Data.actions[Current_Action].msg;
             SendGameMessage(msg)
         }
         let old_div = document.getElementById("action-" + Current_Action);
@@ -31,7 +31,7 @@ let Player = {
         }
         Current_Action = value;
         if (Current_Action !== "nothing"){
-            let msg = "You <span style='color: green;'>started</span> " + Data.actions[Current_Action].msg;
+            let msg = 'You '+ AddTextColor("started", "green") + Data.actions[Current_Action].msg;
             SendGameMessage(msg);
         }
     },
@@ -83,7 +83,9 @@ let Player = {
     }
 }
 
-
+function AddTextColor(text, color){
+    return ('<span style="' + color + ';"' + text + '</span>');
+}
 
 function SendGameMessage(msg,type){
     let new_div = document.createElement("p");
@@ -380,7 +382,7 @@ function CreateInventorySlot(Type, SlotId){
     let Item = Player.Inventory[Type][SlotId];
 
     Item.div = document.createElement("div");
-    Item.div.innerHTML = Data.items.itemlist[Item.i].name + '<div class="inventory_slot_amount">x' + Item.a + '</div>'
+    Item.div.innerHTML = AddTextColor(Data.items.itemlist[Item.i].name, Data.quality.color(Data.items.itemlist[Item.i].quality)) + '<div class="inventory_slot_amount">x' + Item.a + '</div>'
     Item.div.setAttribute("class", "inventory_slot");
     document.getElementById("inventory_top").appendChild(Item.div);
 
@@ -451,15 +453,14 @@ function CreateInventorySlot(Type, SlotId){
         }
         function createtitle(name, quality){
             let title = createtag("p");
-            let title_color = Data.quality.color(quality);
-            title.innerHTML = '<span style="color:' + title_color + ';">' + name + '</span>';
+            title.innerHTML = AddTextColor(name, Data.quality.color(quality));
             createtag("div");
         }
         function createinforows(statlist){
             statlist.forEach((stat)=>{
                 let div = createtag("p");
-                let statname_text = (stat.t == "stat") ? stat.n.toUpperCase() : ('<span style="color:hotpink;">[' + stat.n + ']</span>');
-                let value_text = ((stat.v > 0) ? ('<span style="color:green;">+' + stat.v + '</span>') : ('<span style="color:red;">' + stat.v + '</span>'));
+                let statname_text = (stat.t == "stat") ? stat.n.toUpperCase() : AddTextColor("[" + stat.n + "]", "hotpink");
+                let value_text = ((stat.v > 0) ? AddTextColor("+" + stat.v, "green") : AddTextColor(stat.v, "red"));
 
                 div.innerHTML = (statname_text + ' ' + value_text);
             })

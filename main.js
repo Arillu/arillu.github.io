@@ -1,4 +1,4 @@
-import * as Data from './Data.js?v=43';
+import * as Data from './Data.js?v=44';
 
 
 let Game_Paused = false;
@@ -129,8 +129,8 @@ function GetTotalStats(){//add buffs here later
         }else{
             Data.items.itemlist[item.i].stats.forEach((change)=>getstats(change));
         }
-        if (item.e){
-            item.e.s.forEach((change)=>getstats(change));
+        if (typeof(item.e) == "number"){
+            Data.enchants.enchantlist[item.e].stats.forEach((change)=>getstats(change));
         }
     }
     Object.keys(armor).slice(0,8).forEach((key)=>{
@@ -462,8 +462,8 @@ function CreateInventorySlot(Type, SlotId){
 
                 div.innerHTML = (statname_text + ' ' + value_text);
             })
-            
         }
+
         let item_h_data = Data.items.itemlist[item_h.i];
         if (item_h.c){
             createtitle(item_h_data.name, item_h.c.q);
@@ -472,7 +472,7 @@ function CreateInventorySlot(Type, SlotId){
             createtitle(item_h_data.name, item_h_data.quality);
             createinforows(item_h_data.stats);
         }
-        if (typeof(item_h.e)=="number"){
+        if (typeof(item_h.e) == "number"){
             let item_h_enchant = Data.enchants.enchantlist[item_h.e];
             createtitle(item_h_enchant.name, item_h_enchant.quality);
             createinforows(item_h_enchant.stats);            

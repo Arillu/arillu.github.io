@@ -208,6 +208,28 @@ body {
     border-left-color: #ffffff;
     border-left-style: dashed;
 }
+.char_bottom_split1_stats {
+    z-index: 4;
+    position: relative;
+    float: left;
+    height: 90px;
+    width: 196px;
+    background-color: rgba(126, 126, 126, 0.5);
+    border-right: 1px;
+    border-right-color: #ffffff;
+    border-right-style: dashed;
+}
+.char_bottom_split2_stats {
+    z-index: 4;
+    position: relative;
+    float: left;
+    height: 90px;
+    width: 196px;
+    background-color: rgba(126, 126, 126, 0.5);
+    border-left: 1px;
+    border-left-color: #ffffff;
+    border-left-style: dashed;
+}
 .char_bottom_section {
     position: relative;
     left: 10px;
@@ -251,6 +273,25 @@ body {
 }
 .character_buttons:hover {
   background-color: #04AA6D;
+}
+#hit_rate_label {
+    float: left;
+    width: 30%;
+    height: 100%;
+    text-align: center;
+}
+#dodge_rate_label {
+    float:left;
+    width: 30%;
+    height: 100%;
+    text-align: center;
+}
+#hitdodgediv {
+    position: absolute;
+    top: 255px;
+    height: 44px;
+    width: 394px;
+    left: 13px;
 }
 #status_effects {
     position: absolute;

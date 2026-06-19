@@ -442,8 +442,7 @@ function CreateInventorySlot(Type, SlotId){
         }
         hoverdiv.innerHTML = "";
         let title = createtag("p");
-        titlecolor = Data.quality.color(quality)
-        title.innerHTML = '<span style="' + titlecolor + '">' + item_name + '</span>'
+        title.innerHTML = '<span style="' + Data.quality.color(quality) + '">' + item_name + '</span>'
         createtag("div");
 
         function createinforows(statlist){

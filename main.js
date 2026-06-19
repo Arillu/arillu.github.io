@@ -434,7 +434,7 @@ function CreateInventorySlot(Type, SlotId){
     }
     
     function updatehoverinfo(item_h, quality, item_name){
-        function creatediv(tag){
+        function createtag(tag){
             let div = document.createElement(tag);
             div.setAttribute("class", ((tag == "p") ? "hover_info_details" : "hover_info_bar"));
             hoverdiv.appendChild(div);

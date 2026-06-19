@@ -444,7 +444,7 @@ function CreateInventorySlot(Type, SlotId){
         function createtitle(name, quality){
             let title = createtag("p");
             let title_color = Data.quality.color(quality);
-            title.innerHTML = '<span style="' + title_color + '">' + item_name + '</span>';
+            title.innerHTML = '<span style="' + title_color + '">' + name + '</span>';
             createtag("div");
         }
         function createinforows(statlist){

@@ -440,7 +440,7 @@ function CreateInventorySlot(Type, SlotId){
                 let div = document.createElement('p');
                 div.setAttribute("class","hover_info_details");
 
-                let statname_text = (stat.t == "stat") ? stat.n : ('<span style="color:pink">' + stat.n + '</span>');
+                let statname_text = (stat.t == "stat") ? stat.n : ('<span style="color:hotpink">' + stat.n + '</span>');
                 let value_text = ((stat.v > 0) ? ('<span style="color:green">+' + stat.v + '</span>') : ('<span style="color:red">' + stat.v + '</span>'));
 
                 div.innerHTML = (statname_text + ' ' + value_text);

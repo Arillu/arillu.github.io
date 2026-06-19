@@ -1,4 +1,4 @@
-import * as Data from './Data.js?v=42';
+import * as Data from './Data.js?v=43';
 
 
 let Game_Paused = false;
@@ -152,10 +152,6 @@ function UpdateStats(){
     document.getElementById("stat_lck").innerHTML = "Luck: " + stats.lck;
     document.getElementById("stat_def").innerHTML = "Defense: " + stats.def;
     document.getElementById("stat_spd").innerHTML = "Atk Spd: " + stats.spd;
-    document.getElementById("stat_wis").innerHTML = "Wisdom: " + stats.wis;
-    document.getElementById("stat_per").innerHTML = "Perception: " + stats.per;
-    document.getElementById("stat_res").innerHTML = "Resistance: " + stats.res;
-    document.getElementById("stat_dam").innerHTML = "Damage: " + stats.dam;
     
 }
 function UpdateCharacterBars(){

@@ -1,4 +1,4 @@
-import * as Data from './Data.js?v=34';
+import * as Data from './Data.js?v=35';
 
 
 let Game_Paused = false;
@@ -432,7 +432,7 @@ function CreateInventorySlot(Type, SlotId){
     }
     function updatehoverinfo(item){
         Array.from(hoverdiv.getElementsByClassName("hover_info_details")).forEach((row)=>{
-            row:remove();
+            row.remove();
         });
         function createinforows(statlist){
             statlist.forEach((stat)=>{

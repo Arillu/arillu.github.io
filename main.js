@@ -233,22 +233,20 @@ function UpdateDialougeUI(){
 
 function UpdateEquipmentUI(){
 
-    function updateslot(div, div_text, has_item){
-        div.innerHTML = div_text;
-        if (has_item){
-            div.removeAttribute("style");
-        }else{
-            div.setAttribute("style","color: rgb(161, 161, 161);");
-        }
+    function getcolortext(item){
+        let i_data = Data.items.itemlist[item.i];
+        let namecolor = item.c ? Data.quality.color(item.c.q) : Data.quality.color(i_data.quality);
+        return AddTextColor(i_data.name, namecolor)
     }
+
 
     let j = 1;
     for (; j < Player.Equipped.Tools.length+1; j++) {
         let div = document.getElementById("tool" + j)
-        updateslot(div, Data.items.itemlist[(Player.Equipped.Tools[j-1].i)].name, true)
+        div.innerHTML = getcolortext(Player.Equipped.Tools[j-1]);
     }
     for (; j < 11; j++){
-        updateslot(document.getElementById("tool" + j), "no tool", false)
+        document.getElementById("tool" + j).innerHTML = ""
     }
 
 
@@ -258,24 +256,24 @@ function UpdateEquipmentUI(){
         if (key == "2Hand"){
             if (len > 0){
                 //2Hand comes after Mainhand and offhand in the loop
-                updateslot(document.getElementById("eq_Main_Hand"), Data.items.itemlist[(Player.Equipped.Armor[key].i)].name, true);
-                updateslot(document.getElementById("eq_Off_Hand"), "-", true);
+                document.getElementById("eq_Main_Hand").innerHTML = getcolortext(Player.Equipped.Armor[key]);
+                document.getElementById("eq_Off_Hand").innerHTML = AddTextColor("-", "rgb(161, 161, 161)");
             }
         }
         else if (key=="Accessory") {
             let i = 1;
             Player.Equipped.Armor[key].forEach((item)=>{
-                updateslot(document.getElementById("eq_Acs"+(i)), Data.items.itemlist[item.i].name, true);
+                document.getElementById("eq_Acs"+(i)).innerHTML = getcolortext(item);
                 i++;
             });
             for (; i < 4; i++){
-                updateslot(document.getElementById("eq_Acs"+(i)), "Accessory", false);
+                document.getElementById("eq_Acs"+(i)).innerHTML = AddTextColor("Accessory", "rgb(161, 161, 161)");
             }
         }
         else if (len > 0) {
-            updateslot(div, Data.items.itemlist[(Player.Equipped.Armor[key].i)].name, true)
+            div.innerHTML = getcolortext(Player.Equipped.Armor[key])
         }else{
-            updateslot(div, key, false)
+            div.innerHTML = AddTextColor(key, "rgb(161, 161, 161)");
         }
     });
     UpdateStats();

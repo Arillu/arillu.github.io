@@ -41,7 +41,7 @@ export const items = {
             equip_slot:"Accessory",
             usage:"Equip",
             desc:"A magical rock",
-            equip_stats:[{t:"stat",n:"int",v:1}],
+            stats:[{t:"stat",n:"int",v:1}],
             tier: 0
         },
         {

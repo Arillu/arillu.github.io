@@ -1,4 +1,4 @@
-import * as Data from './Data.js?v=35';
+import * as Data from './Data.js?v=36';
 
 
 let Game_Paused = false;
@@ -430,7 +430,7 @@ function CreateInventorySlot(Type, SlotId){
         hoverdiv.style.left = (mouse.clientX + 20) + 'px';
         hoverdiv.style.top = mouse.clientY + 'px';
     }
-    function updatehoverinfo(item){
+    function updatehoverinfo(item_h){
         Array.from(hoverdiv.getElementsByClassName("hover_info_details")).forEach((row)=>{
             row.remove();
         });
@@ -447,19 +447,19 @@ function CreateInventorySlot(Type, SlotId){
             })
             
         }
-        if (item.c){
-            createinforows(item.c.s);
+        if (item_h.c){
+            createinforows(item_h.c.s);
         }else{
-            createinforows(Data.items.itemlist[item.i].stats);
+            createinforows(Data.items.itemlist[item_h.i].stats);
         }
-        if (item.e){
+        if (item_h.e){
             //add enchantment here
         }
     }
     Item.mouseover = function hover_item(){
         document.removeEventListener("mousemove", hover);
         hoverdiv.removeAttribute("hidden");
-        updatehoverinfo(this);
+        updatehoverinfo(Item);
         document.addEventListener('mousemove',hover);
     }
     Item.mouseout = function exit_item(){

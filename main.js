@@ -343,7 +343,7 @@ function TrimInventoryData(){//for saving the data removes the div and event fro
         Trimed_Inventory[Item_Type] = [];
         Player.Inventory[Item_Type].forEach((Item)=>{
             let slot = {"i":Item.i,"a":Item.a};
-            if (Item.e){
+            if (typeof(Item.e) == "number"){
                 slot["e"] = Item.e;
             }
             if (Item.c){

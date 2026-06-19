@@ -380,9 +380,12 @@ function DeleteInventoryItem(Key, Num, Amount){
 
 function CreateInventorySlot(Type, SlotId){
     let Item = Player.Inventory[Type][SlotId];
-
     Item.div = document.createElement("div");
-    Item.div.innerHTML = AddTextColor(Data.items.itemlist[Item.i].name, Data.quality.color(Data.items.itemlist[Item.i].quality)) + '<div class="inventory_slot_amount">x' + Item.a + '</div>'
+
+    let i_data = Data.items.itemlist[Item.i];
+    let namecolor = Item.c ? Data.quality.color(Item.c.q) : Data.quality.color(i_data.quality);
+
+    Item.div.innerHTML = AddTextColor(i_data.name, namecolor) + '<div class="inventory_slot_amount">x' + Item.a + '</div>';
     Item.div.setAttribute("class", "inventory_slot");
     document.getElementById("inventory_top").appendChild(Item.div);
 
@@ -408,9 +411,9 @@ function CreateInventorySlot(Type, SlotId){
             }
             
             if (Item_Info_Div.hasAttribute("hidden")){
-                Item.div.after(Item_Info_Div)
+                Item.div.after(Item_Info_Div);
                 Item_Currently_Viewing = [Item, Type];
-                change_info()
+                change_info();
                 Item_Info_Div.removeAttribute("hidden");
             }
             else if(Item_Currently_Viewing[0] === Item){
@@ -418,9 +421,9 @@ function CreateInventorySlot(Type, SlotId){
                 Item_Currently_Viewing = null;
             }
             else{
-                Item.div.after(Item_Info_Div)
+                Item.div.after(Item_Info_Div);
                 Item_Currently_Viewing = [Item, Type];
-                change_info()
+                change_info();
             }
             Item_click_spam_debounce = false;
         }
@@ -429,7 +432,7 @@ function CreateInventorySlot(Type, SlotId){
 
 
 
-    const hoverdiv = document.getElementById('mouse_hover_info')
+    const hoverdiv = document.getElementById('mouse_hover_info');
     function hover(mouse){
         hoverdiv.style.left = (mouse.clientX + 20) + 'px';
         hoverdiv.style.top = mouse.clientY + 'px';
@@ -471,7 +474,7 @@ function CreateInventorySlot(Type, SlotId){
             createtitle(item_h_data.name, item_h.c.q);
             createinforows(item_h.c.s);
         }else{
-            createtitle(item_h_data.name, item_h_data.quality)
+            createtitle(item_h_data.name, item_h_data.quality);
             createinforows(item_h_data.stats);
         }
         if (typeof(item_h.e)=="number"){

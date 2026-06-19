@@ -30,20 +30,13 @@ body {
     border-bottom-style: solid;
     pointer-events: 'none';
 }
-#hover_info_details{
+.hover_info_details{
     position: relative;
     left: 20px;
     width: 200px;
-    height: 258px;
-    margin: 2px;
+    height: 18px;
+    margin: 1px;
     pointer-events: 'none';
-}
-#hover_info_footer{
-    position: relative;
-    width: 100%;
-    height: 20px;
-    pointer-events: 'none';
-
 }
 
 #main_game {

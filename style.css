@@ -18,15 +18,12 @@ body {
     text-align: center;
     pointer-events: 'none';
 }
-#hover_info_title{
+.hover_info_bar{
     position: relative;
     width: 230px;
     left: 5px;
-    top: 2px;
-    height:18px;
-    border-bottom-color: #ffffff;
-    border-bottom: 2px;
-    border-bottom-style: solid;
+    height:2px;
+    background: #ffffff;
     pointer-events: 'none';
     margin-bottom: 8px;
 }

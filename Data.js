@@ -1,4 +1,16 @@
-
+export const quality = {
+    color:function(quality){
+        if (quality < 50) {
+            return "rgb(148, 148, 148)";
+        }else if(quality<100) {
+            return "rgb(255,255,255)";
+        }else if(quality<125) {
+            return "rgb(17, 206, 0)";
+        }else if(quality<150) {
+            return "rgb(0, 204, 255)";
+        }
+    }
+}
 export const items = {
     usage:{
         Eat:function(Player){
@@ -15,10 +27,11 @@ export const items = {
             equip_slot:"Tool",
             usage:"Equip",
             desc:"An old pickaxe",
-            stats:[{t:"skill",n:"mining",v:1},
+            stats:[{t:"skill",n:"Mining",v:1},
                 {t:"stat",n:"str",v:1}
             ],
-            tier: 0
+            tier: 0,
+            quality: 0
         },
         {
             id:1,
@@ -28,10 +41,11 @@ export const items = {
             equip_slot:"Tool",
             usage:"Equip",
             desc:"A new pickaxe",
-            stats:[{t:"skill",n:"mining",v:2},
+            stats:[{t:"skill",n:"Mining",v:2},
                 {t:"stat",n:"str",v:5}
             ],
-            tier: 1
+            tier: 1,
+            quality: 50
         },
         {
             id:2,
@@ -42,7 +56,8 @@ export const items = {
             usage:"Equip",
             desc:"A magical rock",
             stats:[{t:"stat",n:"int",v:1}],
-            tier: 0
+            tier: 0,
+            quality: 50
         },
         {
             id:3,
@@ -53,7 +68,8 @@ export const items = {
             usage:"Equip",
             desc:"A wooden ring",
             stats:[{t:"stat",n:"def",v:1}],
-            tier: 0
+            tier: 0,
+            quality: 0
         },
         {
             id:4,
@@ -64,7 +80,8 @@ export const items = {
             usage:"Equip",
             desc:"A sword made from low quality wood",
             stats:[{t:"stat",n:"str",v:1}],
-            tier: 0
+            tier: 0,
+            quality: 0
         },
         {
             id:5,
@@ -75,7 +92,8 @@ export const items = {
             usage:"Equip",
             desc:"A sword made from iron",
             stats:[{t:"stat",n:"str",v:5}],
-            tier: 0
+            tier: 0,
+            quality: 50
         },
         {
             id:6,
@@ -86,7 +104,8 @@ export const items = {
             tier: 0,
             usage:"Eat",
             useitem:(player)=>items.usage.Eat(player),
-            stats:[{t:"buff",n:"food",v:150}]
+            stats:[{t:"buff",n:"Hunger",v:150}],
+            quality: 0
         },
         {
             id:7,
@@ -98,7 +117,8 @@ export const items = {
             usage:"Equip",
             useitem:(player)=>items.usage.Eat(player),
             stats:[],
-            action_stats:[{t:"stat",n:"HP",v:1},{t:"stat",n:"MP",v:1}]
+            action_stats:[{t:"stat",n:"HP",v:1},{t:"stat",n:"MP",v:1}],
+            quality: 0
         }
     ]
 

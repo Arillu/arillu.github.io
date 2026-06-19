@@ -1,4 +1,4 @@
-import * as Data from './Data.js?v=38';
+import * as Data from './Data.js?v=39';
 
 
 let Game_Paused = false;
@@ -425,33 +425,44 @@ function CreateInventorySlot(Type, SlotId){
     }
     Item.div.addEventListener("click", Item.event);
 
+
+
     const hoverdiv = document.getElementById('mouse_hover_info')
     function hover(mouse){
         hoverdiv.style.left = (mouse.clientX + 20) + 'px';
         hoverdiv.style.top = mouse.clientY + 'px';
     }
-    function updatehoverinfo(item_h){
-        Array.from(hoverdiv.getElementsByClassName("hover_info_details")).forEach((row)=>{
-            row.remove();
-        });
+    
+    function updatehoverinfo(item_h, quality, item_name){
+        function creatediv(tag){
+            let div = document.createElement(tag);
+            div.setAttribute("class", ((tag == "p") ? "hover_info_details" : "hover_info_bar"));
+            hoverdiv.appendChild(div);
+            return div;
+        }
+        hoverdiv.innerHTML = "";
+        let title = createtag("p");
+        titlecolor = Data.quality.color(quality)
+        title.innerHTML = '<span style="' + titlecolor + '">' + item_name + '</span>'
+        createtag("div");
+
         function createinforows(statlist){
             hoverdiv.setAttribute("style",("height: " + (52 + statlist.length*24) + "px;"))//52=height of title and 1div, 24 is height of div
             statlist.forEach((stat)=>{
-                let div = document.createElement('p');
-                div.setAttribute("class","hover_info_details");
+                let div = createtag("p");
 
-                let statname_text = (stat.t == "stat") ? stat.n : ('<span style="color:hotpink">' + stat.n + '</span>');
+                let statname_text = (stat.t == "stat") ? stat.n.toUpperCase() : ('<span style="color:hotpink">[' + stat.n + ']</span>');
                 let value_text = ((stat.v > 0) ? ('<span style="color:green">+' + stat.v + '</span>') : ('<span style="color:red">' + stat.v + '</span>'));
 
                 div.innerHTML = (statname_text + ' ' + value_text);
-                hoverdiv.appendChild(div);
             })
             
         }
+        let item_h_data = Data.items.itemlist[item_h.i];
         if (item_h.c){
-            createinforows(item_h.c.s);
+            createinforows(item_h.c.s, item_h.c.q, item_h_data.name);
         }else{
-            createinforows(Data.items.itemlist[item_h.i].stats);
+            createinforows(item_h_data.stats, item_h_data.quality, item_h_data.name);
         }
         if (item_h.e){
             //add enchantment here

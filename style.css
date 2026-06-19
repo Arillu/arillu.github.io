@@ -288,10 +288,9 @@ body {
 }
 #hitdodgediv {
     position: absolute;
-    top: 255px;
+    top: 95px;
     height: 44px;
     width: 394px;
-    left: 13px;
 }
 #status_effects {
     position: absolute;

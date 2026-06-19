@@ -1,4 +1,4 @@
-import * as Data from './Data.js?v=44';
+import * as Data from './Data.js?v=45';
 
 
 let Game_Paused = false;
@@ -60,7 +60,7 @@ let Player = {
     //i= id, a=amount, e=enchant, c=custom stats, div=item slot div(delete from save), event=item slot click function(delete from save)
     //Enchantment:enchant ID
     //Custom_Stats:{craft quality, bonus stats} overides base item stats
-    // div=item slot div(delete from save), event=item slot click function(delete from save)
+    // div=item slot div(deleted from save), event=item slot click function(deleted from save)
     Inventory:{
         weapon:[{i:4,a:1},{i:5,a:5},{i:4,a:1,e:0,c:{q:100,s:[{t:"stat",n:"str",v:7}]}}],
         tool:[{i:0,a:1},{i:1,a:7}],
@@ -243,7 +243,7 @@ function UpdateEquipmentUI(){
         div.innerHTML = getcolortext(Player.Equipped.Tools[j-1]);
     }
     for (; j < 11; j++){
-        document.getElementById("tool" + j).innerHTML = ""
+        document.getElementById("tool" + j).innerHTML = "-"
     }
 
 

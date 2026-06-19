@@ -467,7 +467,7 @@ function CreateInventorySlot(Type, SlotId){
             createtitle(item_h_data.name, item_h_data.quality)
             createinforows(item_h_data.stats);
         }
-        if (item_h.e){
+        if (typeof(item_h.e)=="number"){
             item_h_enchant = Data.enchants.enchantlist[item_h.e]
             createtitle(item_h_enchant.name, item_h_enchant.quality);
             createinforows(item_h_enchant.stats);            

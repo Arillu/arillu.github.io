@@ -29,13 +29,14 @@ body {
     border-bottom: 2px;
     border-bottom-style: solid;
     pointer-events: 'none';
+    margin-bottom: 8px;
 }
 .hover_info_details{
     position: relative;
     left: 20px;
     width: 200px;
     height: 18px;
-    margin: 1px;
+    margin: 3px;
     pointer-events: 'none';
 }
 

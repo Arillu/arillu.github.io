@@ -84,7 +84,7 @@ let Player = {
 }
 
 function AddTextColor(text, color){
-    return ('<span style="' + color + ';">' + text + '</span>');
+    return ('<span style="color:' + color + ';">' + text + '</span>');
 }
 
 function SendGameMessage(msg,type){

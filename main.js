@@ -1,4 +1,4 @@
-import * as Data from './Data.js?v=39';
+import * as Data from './Data.js?v=40';
 
 
 let Game_Paused = false;
@@ -442,7 +442,10 @@ function CreateInventorySlot(Type, SlotId){
         }
         hoverdiv.innerHTML = "";
         let title = createtag("p");
-        title.innerHTML = '<span style="' + Data.quality.color(quality) + '">' + item_name + '</span>'
+        let title_color = Data.quality.color(quality);
+        console.log(title_color);
+        console.log(item_name);
+        title.innerHTML = '<span style="' + title_color + '">' + item_name + '</span>';
         createtag("div");
 
         function createinforows(statlist){

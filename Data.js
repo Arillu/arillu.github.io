@@ -1,12 +1,12 @@
 export const quality = {
-    color:function(quality){
-        if (quality < 50) {
+    color:function(score){
+        if (score < 50) {
             return "rgb(148, 148, 148)";
-        }else if(quality<100) {
+        }else if(score<100) {
             return "rgb(255,255,255)";
-        }else if(quality<125) {
+        }else if(score<125) {
             return "rgb(17, 206, 0)";
-        }else if(quality<150) {
+        }else if(score<150) {
             return "rgb(0, 204, 255)";
         }
     }

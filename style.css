@@ -510,7 +510,7 @@ body {
 #inventory_item_info{
     position: relative;
     z-index: 5;
-    height: 150px;
+    height: 120px;
     line-height: 30px;
     width: 414px;
     border-bottom: 1px dotted #ffffff;
@@ -544,7 +544,7 @@ body {
     position: absolute;
     font-size: 14px;
     width: 402px;
-    height: 94px;
+    height: 64px;
     top: 16px;
     left: 6px;
     text-align: center;
@@ -559,17 +559,17 @@ body {
 }
 #item_info_use{
     position: absolute;
-    bottom: 2px;
+    bottom: 4px;
     left: 6px;
 }
 #item_info_sell{
     position: absolute;
-    bottom: 2px;
+    bottom: 4px;
     left: 157px;
 }
 #item_info_delete{
     position: absolute;
-    bottom: 2px;
+    bottom: 4px;
     left: 308px;
 }
 .item_info_button{

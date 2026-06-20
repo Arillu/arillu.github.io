@@ -11,8 +11,12 @@ let Current_Action = "nothing"
 let Item_Currently_Viewing = null;
 
 let Player = {
-    "Stats":{"str":1,"int":1,"agi":1,"lck":0,"def":0,"spd":1,"HP":5,"HP_Max":10,"MP":5,"MP_Max":10,"Hun":200,"Hun_Max":250,"Exp":0,"Level":0},
-    
+    Stats:{"str":1,"int":1,"agi":1,"lck":0,"def":0,"spd":1,"HP":5,"HP_Max":10,"MP":2,"MP_Max":2,"Hun":200,"Hun_Max":250,"Exp":0,"Level":0},
+    Buffs:[],//{i:(buff id),t:(time remaining)}
+    Skills:{},//{i:(skill id),l:level,e:experience,t:(temp levels from equipment/etc.)}
+    HiddenStats:{},
+
+
     unlocked_actions:["run","rest"], //list of action names(from data.actions)
 
     TotalStats:GetTotalStats,
@@ -466,7 +470,7 @@ function CreateInventorySlot(Type, SlotId){
 
         let item_h_data = Data.items.itemlist[item_h.i];
         if (item_h.c){
-            createtitle(item_h_data.name, item_h.c.q);
+            createtitle(item_h_data.name + " [" + item_h.c.q + "%]", item_h.c.q);
             createinforows(item_h.c.s);
         }else{
             createtitle(item_h_data.name, item_h_data.quality);

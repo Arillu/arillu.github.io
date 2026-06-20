@@ -1,4 +1,4 @@
-import * as Data from './Data.js?v=45';
+import * as Data from './Data.js?v=46';
 
 
 let Game_Paused = false;
@@ -6,15 +6,15 @@ let Game_Paused = false;
 const LevelExpReq = [100,400,1600]
 
 let GameDate = {"Year":1000,"Month":4,"Day":15,"Hour":7,"Minute":30}
-let Current_Location = {area:"spawn", location:"start"};
-let Current_Action = "nothing"
+let Current_Location_ = {area:"spawn", location:"start"};
+let Current_Action_ = "nothing"
 let Item_Currently_Viewing = null;
 
 let Player = {
     Stats:{"str":1,"int":1,"agi":1,"lck":0,"def":0,"spd":1,"HP":5,"HP_Max":10,"MP":2,"MP_Max":2,"Hun":200,"Hun_Max":250,"Exp":0,"Level":0},
     Buffs:[],//{i:(buff id),t:(time remaining)}
-    Skills:{},//{i:(skill id),l:level,e:experience,t:(temp levels from equipment/etc.)}
-    HiddenStats:{},
+    Skills:{'0':{l:0,e:0,t:0}},//id:{l:level,e:experience,t:(temp levels from equipment/etc.)}
+    HiddenStats:{},//name:value,
 
 
     unlocked_actions:["run","rest"], //list of action names(from data.actions)
@@ -22,29 +22,33 @@ let Player = {
     TotalStats:GetTotalStats,
 
     get Current_Action(){ 
-        return Current_Action;
+        return Current_Action_;
     },
     set Current_Action(value){
-        if (Current_Action !== "nothing"){
-            let msg = 'You '+ AddTextColor("stopped", "red") + Data.actions[Current_Action].msg;
+        if (Current_Action_ !== "nothing"){
+            let msg = 'You '+ AddTextColor("stopped", "red") + Data.actions[Current_Action_].msg;
             SendGameMessage(msg)
         }
-        let old_div = document.getElementById("action-" + Current_Action);
+        let old_div = document.getElementById("action-" + Current_Action_);
         if (old_div){
             old_div.removeAttribute("style");
         }
-        Current_Action = value;
-        if (Current_Action !== "nothing"){
-            let msg = 'You '+ AddTextColor("started", "green") + Data.actions[Current_Action].msg;
+
+
+        Current_Action_ = value;
+        if (Current_Action_ !== "combat"){
+
+        }else if (Current_Action_ !== "nothing"){
+            let msg = 'You '+ AddTextColor("started", "green") + Data.actions[Current_Action_].msg;
             SendGameMessage(msg);
         }
     },
 
     get Current_Location(){ 
-        return Current_Location;
+        return Current_Location_;
     },
     set Current_Location(value){
-        Current_Location = value;
+        Current_Location_ = value;
         UpdateActionUI();
         UpdateDialougeUI();
     },
@@ -447,7 +451,7 @@ function CreateInventorySlot(Type, SlotId){
 
             let hoverdiv_height = Number(hoverdiv.style.height.slice(0,-2));
             if (tag=="p"){
-                hoverdiv.style.height = (hoverdiv_height + 26) + "px";
+                hoverdiv.style.height = (hoverdiv_height + 24) + "px";
             }else{
                 hoverdiv.style.height = (hoverdiv_height + 2) + "px";
             }
@@ -723,8 +727,8 @@ function Save_Game() {
     let savedata = {
         "GameDate":GameDate,
         "CharacterStats":Player.Stats,
-        "Current_Location":Current_Location,
-        "Current_Action":Current_Action,
+        "Current_Location":Current_Location_,
+        "Current_Action":((Current_Action_ == "combat") ? "nothing" : Current_Action_),
         "Inventory":TrimInventoryData(),
         "Equipped":Player.Equipped,
         "unlocked_actions":Player.unlocked_actions
@@ -751,8 +755,8 @@ function Load_Game() {
         retrive_data = JSON.parse(retrive_data);
         GameDate = retrive_data.GameDate;
         Player.Stats = retrive_data.CharacterStats;
-        Current_Action = retrive_data.Current_Action;
-        Current_Location = retrive_data.Current_Location;
+        Player.Current_Action = retrive_data.Current_Action;
+        Current_Location_ = retrive_data.Current_Location;
         Player.Inventory = retrive_data.Inventory;
         Player.Equipped = retrive_data.Equipped;
         Player.unlocked_actions = retrive_data.unlocked_actions;

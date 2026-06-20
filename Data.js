@@ -175,6 +175,133 @@ export const actions = {
 
 }
 
+
+export const skill = [
+    {
+        id:0,
+        name:"Fighting",
+        experience_to_lvl:[100, 500, 2500, 10000, 40000, 100000],
+        lvl_rewards:[[{t:"stat",n:"str",v:1}], [{t:"stat",n:"str",v:1}], [{t:"stat",n:"str",v:1}], [{t:"stat",n:"str",v:1}], [{t:"stat",n:"str",v:1}], [{t:"stat",n:"str",v:1}]]
+    }
+]
+
+
+export function gain_skill_exp(player, skill, xp){
+
+}
+
+export function calculate_damage(player, damage, typelist){
+    let damagelist = [];
+    typelist.forEach((type_array)=>{
+        let type = type_array.type;
+        let plr_type_def = player.HiddenStats[damagetypes[type].defense] || 0;
+        let plr_def = player.Stats.def*type_array.portion;
+        let type_damage = damage*type_array.portion;
+        let total_damage = type_damage-(plr_type_def + plr_def)
+        total_damage = total_damage > 0 ? total_damage : 0
+
+        damagelist.push({
+            "type":type,
+            "damage":total_damage
+        });
+    });
+    return damagelist;
+}
+
+
+export const damagetypes = {
+    fire:{
+        id:"fire",
+        defense:"fire_def",
+        skillgains:[]
+    },
+    blunt:{
+        id:"blunt",
+        defense:"blunt_def",
+        skillgains:[]
+    },
+    slash:{
+        id:"slash",
+        defense:"slash_def",
+        skillgains:[]
+    },
+}
+
+
+export const hiddenstats = {
+    fire_def:{
+        name:"Fire Defense"
+    },
+    blunt_def:{
+        name:"Blunt Defense"
+    },
+    slash_def:{
+        name:"Slash Defense"
+    }
+}
+
+
+
+
+export const effects = {
+    burn1:{
+        name:"Burn"
+
+    }
+}
+
+
+
+export const combat = {
+    Mobs:[
+        {
+            id:0,
+            name:"test mob",
+            stats:{"str":1,"int":1,"agi":1,"def":0,"spd":1,"HP":5,"HP_Max":5,"Level":0},
+            status_effects:[],
+            drops:[],
+            attacks:[
+                {
+                    chance: 0.2,
+                    damage: [1, 3],
+                    damage_type: [{type:"fire", portion:0.5}, {type:"slash", portion:0.5}],
+                    heal:0,
+                    inflict:[{name: "burn1", chance: 0.5, stacks: 10}],
+                    self_inflict:[]
+                },
+                {
+                    chance = 0.65,
+                    damage = [0, 1],
+                    damage_type = [{type:"blunt", portion:1}],
+                    heal:0,
+                    inflict:[],
+                    self_inflict:[]
+                },
+                {
+                    chance: 0.15,
+                    damage: [0, 0],
+                    damage_type: [{type:"none", portion:1}],
+                    heal:[1, 2],
+                    inflict:[],
+                    self_inflict:[]
+                }
+            ]
+        }
+    ],
+
+
+
+    encounters = [
+        {
+            id:0,
+
+        }
+    ]
+}
+
+
+
+
 const DA_groups = {
     building:["run"],
     outside:[]
@@ -185,7 +312,7 @@ export const locations = {
         player.Current_Location = location;
         player.Current_Action = action ? action : 'nothing';
     },
-    EnterCombat:function(){
+    EnterCombat:function(player, encounter){
 
     },
     OpenShop:function(){
@@ -241,9 +368,14 @@ export const locations = {
                 disabled_actions:["none"],
                 options:[
                     {
-                        text:'<span style="color: red;">[Area]</span> Enter the building',
+                        text:'<span style="color: green;">[Area]</span> Enter the building',
                         id:0,
                         click:(player) => locations.MoveTo(player,{area:"spawn",location:"start"})
+                    },
+                    {
+                        text:'<span style="color: red;">[Combat]</span> Test Fight',
+                        id:0,
+                        click:(player) => locations.EnterCombat(player, 0)
                     }
                 ]            
             }

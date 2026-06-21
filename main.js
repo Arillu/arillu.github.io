@@ -1,4 +1,4 @@
-import * as Data from './Data.js?v=50';
+import * as Data from './Data.js?v=51';
 
 
 let Game_Paused = false;
@@ -299,7 +299,7 @@ function UpdateCombatUI(){
 
 
 function UpdateActionUI(){
-    let disabled_actions_list = Data.locations.area[Current_Location.area][Current_Location.location].disabled_actions;
+    let disabled_actions_list = Data.locations.area[Current_Location_.area][Current_Location_.location].disabled_actions;
     let div_list = Array.from(document.getElementsByClassName("action_menu_list_item"));
     if(Player.Current_Action == "combat"){
         div_list.forEach((div)=>{

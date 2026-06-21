@@ -1,3 +1,23 @@
+
+
+
+export function get_probability_awnser(probability_array){
+    let prob_roll = Math.random();
+    let prob_sum = 0;
+    let awnser;
+    probability_array.every((obj)=>{
+        if (prob_roll <= (obj.chance + prob_sum)){
+            awnser = obj;
+            return false;
+        }else{
+            prob_sum = prob_sum + obj.chance;
+            return true;
+        }
+    });
+    return awnser;
+}
+
+
 export const quality = {
     color:function(score){
         if (score < 50) {
@@ -253,9 +273,10 @@ export const effects = {
 
 
 export const combat = {
-    Mobs:[
-        {
-            id:0,
+    allowed_actions:["run"],
+    mobs:{
+        "testmob":{
+            id:"testmob",
             name:"test mob",
             stats:{"str":1,"int":1,"agi":1,"def":0,"spd":1,"HP":5,"HP_Max":5,"Level":0},
             status_effects:[],
@@ -286,17 +307,45 @@ export const combat = {
                     self_inflict:[]
                 }
             ]
+        },
+        "testmob2":{
+            id:"testmob2",
+            name:"test mob2",
+            stats:{"str":1,"int":1,"agi":1,"def":0,"spd":1,"HP":10,"HP_Max":10,"Level":1},
+            status_effects:[],
+            drops:[],
+            attacks:[
+                {
+                    chance = 1,
+                    damage = [0, 1],
+                    damage_type = [{type:"blunt", portion:1}],
+                    heal:0,
+                    inflict:[],
+                    self_inflict:[]
+                }
+            ]
         }
-    ],
+
+    },
 
 
-
-    encounters = [
-        {
-            id:0,
-
+    encounters = {
+        test:{
+            fights:10,
+            mobs_per_fight:[{amount:1,chance:1}],
+            mob_list_type:"random", //random or fixed
+            mobs:[{name:"testmob", chance:0.3},{name:"testmob2", chance:0.7}],
+            moblist:null // used for premade fights if list is set to fixed
+        },
+        test2:{
+            fights:10,
+            mobs_per_fight:[{amount:2,chance:0.5},{amount:3,chance:0.4},{amount:5,chance:0.1}],
+            mob_list_type:"random", //random or fixed
+            mobs:[{name:"testmob", chance:0.3},{name:"testmob2", chance:0.7}],
+            moblist:null // used for premade fights if list is set to fixed
         }
-    ]
+    }
+    
 }
 
 
@@ -313,7 +362,28 @@ export const locations = {
         player.Current_Action = action ? action : 'nothing';
     },
     EnterCombat:function(player, encounter){
+        player.Current_Action = "combat";
+        const encounter_data = combat.encounters[encounter];
 
+        let moblist = function(){
+            if (encounter_data.mob_list_type == "random"){
+                let fight_list = [];
+                for (let i = 0; i < encounter_data.fights; i++) {
+                    let mob_amount = get_probability_awnser(encounter_data.mobs_per_fight).amount;
+                    let mobs = [];
+                    for (let j = 0; j < mob_amount; j++) {
+                        mobs.push(get_probability_awnser(encounter_data.mobs).name);
+                    }
+                    fight_list.push(mobs);
+                }
+                return fight_list;
+            }else{
+                return encounter_data.moblist;
+            }
+        }();
+
+        player.Current_Combat_Encounter.Current_Fight_Enemy = moblist;
+        player.StartFight(true);
     },
     OpenShop:function(){
 
@@ -375,7 +445,7 @@ export const locations = {
                     {
                         text:'<span style="color: red;">[Combat]</span> Test Fight',
                         id:0,
-                        click:(player) => locations.EnterCombat(player, 0)
+                        click:(player) => locations.EnterCombat(player, "test")
                     }
                 ]            
             }

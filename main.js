@@ -1,4 +1,4 @@
-import * as Data from './Data.js?v=46';
+import * as Data from './Data.js?v=47';
 
 
 let Game_Paused = false;
@@ -11,6 +11,7 @@ let Current_Action_ = "nothing"
 let Item_Currently_Viewing = null;
 
 let Player = {
+    Name:"You",
     Stats:{"str":1,"int":1,"agi":1,"lck":0,"def":0,"spd":1,"HP":5,"HP_Max":10,"MP":2,"MP_Max":2,"Hun":200,"Hun_Max":250,"Exp":0,"Level":0},
     Buffs:[],//{i:(buff id),t:(time remaining)}
     Skills:{'0':{l:0,e:0,t:0}},//id:{l:level,e:experience,t:(temp levels from equipment/etc.)}
@@ -33,10 +34,9 @@ let Player = {
         if (old_div){
             old_div.removeAttribute("style");
         }
-
-
         Current_Action_ = value;
-        if (Current_Action_ !== "combat"){
+        if (Current_Action_ == "combat"){
+            SendGameMessage('You entered combat!')
 
         }else if (Current_Action_ !== "nothing"){
             let msg = 'You '+ AddTextColor("started", "green") + Data.actions[Current_Action_].msg;
@@ -48,10 +48,22 @@ let Player = {
         return Current_Location_;
     },
     set Current_Location(value){
-        Current_Location_ = value;
-        UpdateActionUI();
-        UpdateDialougeUI();
+        if (this.Current_Action == "combat"){
+            SendGameMessage("You can't change locations while in combat!")
+        }else{
+            Current_Location_ = value;
+            UpdateActionUI();
+            UpdateDialougeUI();
+        }
     },
+
+    Combat_Teamates:[],
+    Current_Combat_Encounter:{
+        Fight_List:[],
+        Current_Fight_Enemy:[]
+    },
+    StartFight:StartFight,
+
     Restore_Resource:function(resource_list){ //HP, Mp, Hunger, and buffs
         resource_list.forEach((resource)=>{
             if (resource.t == "stat"){
@@ -90,6 +102,103 @@ let Player = {
         Tools:[],//only 1 per type (cant equip two pickaxes)
     }
 }
+
+
+
+function StartFight(encounter_start){
+
+    function CreateUI(side, entity_info, place_num){
+        function newdiv(parent, text, id, class_){
+            let div = document.createElement("div");
+            div.innerHTML = text;
+            div.setAttribute("id", id);
+            div.setAttribute("class", class_);
+            parent.appendChild(div);
+            return div;
+        }
+
+        let combat_div = newdiv(
+            document.getElementById("combat_" + side + "_div"),
+            "",
+            "combat_" + side + "_" + place_num,
+            "combat_player_div"
+        );
+        let combat_name_div = newdiv(
+            combat_div,
+            entity_info.Name,
+            "combat_" + side + "_name_" + place_num,
+            "combat_name_label"
+        );
+        let combat_level_div = newdiv(
+            combat_div,
+            "lvl " + entity_info.Level,
+            "combat_" + side + "_level_" + place_num,
+            "combat_level_label"
+        );
+        let combat_health_shadow_div = newdiv(
+            combat_div,
+            "",
+            "",
+            "combat_health_shadow"
+        );
+        let combat_health_label_div = newdiv(
+            combat_health_shadow_div,
+            toString(entity_info.HP) + "/" + toString(entity_info.HP_Max),
+            "combat_" + side + "_health_bar_label_" + place_num,
+            "combat_health_bar_label"
+        );
+        let combat_health_bar_div = newdiv(
+            combat_health_shadow_div,
+            "",
+            "combat_" + side + "_health_bar_" + place_num,
+            "combat_health_bar"
+        );
+        let combat_action_shadow_div = newdiv(
+            combat_div,
+            "",
+            "",
+            "combat_action_shadow"
+        );
+        let combat_health_shadow_div = newdiv(
+            combat_action_shadow_div,
+            "",
+            "combat_" + side + "_action_bar_" + place_num,
+            "combat_action_bar"
+        );
+
+    }
+
+    if (encounter_start){
+        UpdateActionUI();
+        document.getElementById("combat_left_div").innerHTML = "";
+        CreateUI("left", {HP:Player.Stats.HP, HP_Max:Player.Stats.HP_Max, Level:Player.Stats.Level, Name:Player.Name}, 1)
+        Player.Combat_Teamates.forEach((teamate, num) =>{
+            CreateUI("left", {HP:teamate.Stats.HP, HP_Max:teamate.Stats.HP_Max, Level:teamate.Stats.Level, Name:teamate.Name}, num+2)
+        })
+    }
+    document.getElementById("combat_right_div").innerHTML = "";
+
+    function clone_mobs(list){
+        let Enemies = [];
+        list.forEach((mob_name)=>{
+            Enemies.push(JSON.parse(JSON.stringify(Data.combat.mobs[mob_name])));
+        });
+        return Enemies;
+    }
+    Player.Current_Fight_Enemy = clone_mobs(Player.Current_Combat_Encounter.Fight_List[0]);
+    Player.Current_Combat_Encounter.Fight_List.splice(0,1);
+    //make async then when the fight ends check if theres another and then call start fight again
+    Player.Current_Fight_Enemy.forEach((enemy, num) =>{
+            CreateUI("right", {HP:enemy.stats.HP, HP_Max:enemy.stats.HP_Max, Level:enemy.stats.Level, Name:enemy.name}, num+1)
+        })
+    
+    
+
+    document.getElementById("game_dialouge_window").setAttribute("hidden","");
+    document.getElementById("game_combat_window").removeAttribute("hidden");
+
+}
+
 
 function AddTextColor(text, color){
     return ('<span style="color:' + color + ';">' + text + '</span>');
@@ -184,21 +293,32 @@ function UpdateCharacterBars(){
 }
 
 
+function UpdateCombatUI(){
+    
+}
+
 
 function UpdateActionUI(){
     let disabled_actions_list = Data.locations.area[Current_Location.area][Current_Location.location].disabled_actions;
     let div_list = Array.from(document.getElementsByClassName("action_menu_list_item"));
-    if (disabled_actions_list == "all"){
+    if(Player.Current_Action == "combat"){
+        div_list.forEach((div)=>{
+            div.setAttribute("hidden","");
+            if (Data.combat.allowed_actions.includes(div.getAttribute("id").split("-")[1])){
+                div.removeAttribute("hidden");
+            }
+        });
+    }else if (disabled_actions_list == "all"){
         div_list.forEach((div)=>{
             div.setAttribute("hidden","");
         });
     }
     else{
         div_list.forEach((div)=>{
-                div.removeAttribute("hidden");
-                if (disabled_actions_list.includes(div.getAttribute("id").split("-")[1])){
-                    div.setAttribute("hidden","");
-                }
+            div.removeAttribute("hidden");
+            if (disabled_actions_list.includes(div.getAttribute("id").split("-")[1])){
+                div.setAttribute("hidden","");
+            }
         });
     }
 }
@@ -709,7 +829,13 @@ function CreateActionSlot(action){
     div.addEventListener('click', function(){
         if (!debounce){
             debounce = true;
-            if (action === Player.Current_Action){
+            if (Player.Current_Action == "combat"){
+                if (action == "run"){
+                    //run from the fight
+                    SendGameMessage("I havent added running from a fight yet");
+                }
+                SendGameMessage("You can't " + AddTextColor(action, "hotpink") + " while in combat!");
+            }else if (action === Player.Current_Action){
                 Player.Current_Action = "nothing";
                 div.removeAttribute("style");
             }else{
@@ -777,3 +903,6 @@ function Load_Game() {
     Game_Loop();
 }
 window.addEventListener('load', Load_Game, {once:true})
+
+        Armor:{
+            "Main Hand":{},

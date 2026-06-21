@@ -283,25 +283,25 @@ export const combat = {
             drops:[],
             attacks:[
                 {
-                    chance: 0.2,
-                    damage: [1, 3],
-                    damage_type: [{type:"fire", portion:0.5}, {type:"slash", portion:0.5}],
+                    chance:0.2,
+                    damage:[1, 3],
+                    damage_type:[{type:"fire", portion:0.5}, {type:"slash", portion:0.5}],
                     heal:0,
                     inflict:[{name: "burn1", chance: 0.5, stacks: 10}],
                     self_inflict:[]
                 },
                 {
-                    chance = 0.65,
-                    damage = [0, 1],
-                    damage_type = [{type:"blunt", portion:1}],
+                    chance:0.65,
+                    damage:[0, 1],
+                    damage_type:[{type:"blunt", portion:1}],
                     heal:0,
                     inflict:[],
                     self_inflict:[]
                 },
                 {
-                    chance: 0.15,
-                    damage: [0, 0],
-                    damage_type: [{type:"none", portion:1}],
+                    chance:0.15,
+                    damage:[0, 0],
+                    damage_type:[{type:"none", portion:1}],
                     heal:[1, 2],
                     inflict:[],
                     self_inflict:[]
@@ -316,9 +316,9 @@ export const combat = {
             drops:[],
             attacks:[
                 {
-                    chance = 1,
-                    damage = [0, 1],
-                    damage_type = [{type:"blunt", portion:1}],
+                    chance:1,
+                    damage:[0, 1],
+                    damage_type:[{type:"blunt", portion:1}],
                     heal:0,
                     inflict:[],
                     self_inflict:[]

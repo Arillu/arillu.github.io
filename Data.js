@@ -381,7 +381,6 @@ export const locations = {
                 return encounter_data.moblist;
             }
         }();
-        console.log(moblist);
         player.Current_Combat_Encounter.Fight_List = moblist;
         player.StartFight(true);
     },

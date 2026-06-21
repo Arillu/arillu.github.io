@@ -1,4 +1,4 @@
-import * as Data from './Data.js?v=53';
+import * as Data from './Data.js?v=54';
 
 
 let Game_Paused = false;
@@ -143,7 +143,7 @@ function StartFight(encounter_start){
         );
         let combat_health_label_div = newdiv(
             combat_health_shadow_div,
-            toString(entity_info.HP) + "/" + toString(entity_info.HP_Max),
+            entity_info.HP + "/" + entity_info.HP_Max,
             "combat_" + side + "_health_bar_label_" + place_num,
             "combat_health_bar_label"
         );
@@ -153,6 +153,7 @@ function StartFight(encounter_start){
             "combat_" + side + "_health_bar_" + place_num,
             "combat_health_bar"
         );
+        combat_health_bar_div.setAttribute("style","width: " + (entity_info.HP/entity_info.HP_Max) + "%;");
         let combat_action_shadow_div = newdiv(
             combat_div,
             "",

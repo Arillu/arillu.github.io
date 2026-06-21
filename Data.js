@@ -382,7 +382,7 @@ export const locations = {
             }
         }();
         console.log(moblist);
-        player.Current_Combat_Encounter.Current_Fight_Enemy = moblist;
+        player.Current_Combat_Encounter.Fight_List = moblist;
         player.StartFight(true);
     },
     OpenShop:function(){

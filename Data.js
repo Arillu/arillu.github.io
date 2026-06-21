@@ -329,7 +329,7 @@ export const combat = {
     },
 
 
-    encounters = {
+    encounters:{
         test:{
             fights:10,
             mobs_per_fight:[{amount:1,chance:1}],
@@ -444,8 +444,13 @@ export const locations = {
                     },
                     {
                         text:'<span style="color: red;">[Combat]</span> Test Fight',
-                        id:0,
+                        id:1,
                         click:(player) => locations.EnterCombat(player, "test")
+                    },
+                    {
+                        text:'<span style="color: red;">[Combat]</span> Test Fight 2',
+                        id:2,
+                        click:(player) => locations.EnterCombat(player, "test2")
                     }
                 ]            
             }

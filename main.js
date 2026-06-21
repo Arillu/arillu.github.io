@@ -153,7 +153,7 @@ function StartFight(encounter_start){
             "combat_" + side + "_health_bar_" + place_num,
             "combat_health_bar"
         );
-        combat_health_bar_div.setAttribute("style","width: " + (entity_info.HP/entity_info.HP_Max) + "%;");
+        combat_health_bar_div.setAttribute("style","width: " + ((entity_info.HP/entity_info.HP_Max)*100) + "%;");
         let combat_action_shadow_div = newdiv(
             combat_div,
             "",

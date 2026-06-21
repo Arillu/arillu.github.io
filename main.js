@@ -1,4 +1,4 @@
-import * as Data from './Data.js?v=47';
+import * as Data from './Data.js?v=48';
 
 
 let Game_Paused = false;
@@ -159,7 +159,7 @@ function StartFight(encounter_start){
             "",
             "combat_action_shadow"
         );
-        let combat_health_shadow_div = newdiv(
+        let combat_action_bar_div = newdiv(
             combat_action_shadow_div,
             "",
             "combat_" + side + "_action_bar_" + place_num,
@@ -902,7 +902,4 @@ function Load_Game() {
     UpdateEquipmentUI();
     Game_Loop();
 }
-window.addEventListener('load', Load_Game, {once:true})
-
-        Armor:{
-            "Main Hand":{},
+window.addEventListener('load', Load_Game, {once:true});
